@@ -2,8 +2,8 @@
 """
 
 import itertools
-from .net import MultiplexNetwork
-from . import transforms
+from pymnet.net import MultiplexNetwork
+from pymnet import transforms
 
 def cc_num_den(net,node):
     degree=net[node].deg()
@@ -33,10 +33,10 @@ def lcc(net,node,undefReturn=0.0):
 
     Notes
     -----
-    Time complexity O(k^2), where k is the degree of the node. This 
+    Time complexity O(k^2), where k is the degree of the node. This
     could be improved if it is known that the neighbors degrees are
-    smaller than the nodes degrees to O(k*kn), where kn is the average 
-    degree of all the neighbors. 
+    smaller than the nodes degrees to O(k*kn), where kn is the average
+    degree of all the neighbors.
 
     The function assumes that the network doesn't have any self-links,
     and that it's undirected.
@@ -73,7 +73,7 @@ def cc_zhang(net,node,undefReturn=0.0):
         for i,j in itertools.combinations(net[node],2):
             nij=net[node][i]*net[node][j]
             ij=net[i][j]
-            den+=nij            
+            den+=nij
             if ij!=net.noEdge:
                 nom+=nij*ij
         return nom/float(den)/float(maxw)
@@ -101,7 +101,7 @@ def gcc_zhang(net):
             for i,j in itertools.combinations(net[node],2):
                 nij=net[node][i]*net[node][j]
                 ij=net[i][j]
-                den+=nij            
+                den+=nij
                 if ij!=net.noEdge:
                     nom+=nij*ij
     if den!=0:
@@ -329,7 +329,7 @@ def elementary_cycles(net,node=None,layer=None,anet=None):
         Returns the elementary cycles around the node-layer pair in the
         following order:
         aaa,aacac,acaac,acaca,acacac,afa,afcac,acfac,acfca,acfcac
-    
+
     References
     ----------
     "Clustering Coefficients in Multiplex Networks", E. Cozzo et al. , arXiv:1307.6780 [physics.soc-ph]
@@ -359,7 +359,7 @@ def cc_cycle_vector_bf(net,node,layer,undefReturn=0.0):
     """
     assert isinstance(net,MultiplexNetwork)
     assert net.aspects==1
-    
+
     aaa=0
     aacac=0 # == cacaa
     acaac=0 # == caaca
@@ -374,7 +374,7 @@ def cc_cycle_vector_bf(net,node,layer,undefReturn=0.0):
     if degree>=2:
         for i,j in itertools.combinations(intranet[node],2):
             if intranet[i][j]!=intranet.noEdge:
-                aaa+=1    
+                aaa+=1
     aaa=aaa*2
 
     #aacac
@@ -432,9 +432,9 @@ def cc_cycle_vector_bf(net,node,layer,undefReturn=0.0):
                     afcac+=len(neighbors)
 
     if net.fullyInterconnected:
-        acfca=afa*(len(net.slices[1])-1)        
+        acfca=afa*(len(net.slices[1])-1)
         #afcac,acfac
-        #afcac=0 
+        #afcac=0
         #for i in intranet[node]:
         #    for layer2 in other_layers:
         #        for j,dummy in net[node,:,layer2,layer2]:
@@ -443,7 +443,7 @@ def cc_cycle_vector_bf(net,node,layer,undefReturn=0.0):
         acfac=afcac
         acfcac=afcac*(len(net.slices[1])-2)
     else:
-        acfac=0 
+        acfac=0
         for i in intranet[node]:
             for dummy,layer2 in net[i,i,layer,:]:
                 if net[node,node,layer,layer2]!=net.noEdge:
@@ -452,7 +452,7 @@ def cc_cycle_vector_bf(net,node,layer,undefReturn=0.0):
                     else:
                         acfac+=net[node,:,layer2,layer2].deg()
 
-        acfca=0 
+        acfca=0
         layertonode={}
         for i in intranet[node]:
             for dummy,layer2 in net[i,i,layer,:]:
@@ -464,7 +464,7 @@ def cc_cycle_vector_bf(net,node,layer,undefReturn=0.0):
         for nodelist in layertonode.values():
             #assert len(nodelist)==intranet[node].deg(),(len(nodelist),intranet[node].deg())
             acfca+=(len(nodelist)*(len(nodelist)-1))
-    
+
         #raise NotImplemented()
         acfcac=0
         for i in intranet[node]:
@@ -514,7 +514,7 @@ def cc_cycle_vector_anet(net,node,layer=None,anet=None,undefReturn=0.0):
         if degree>=2:
             for i,j in itertools.combinations(intranet[node],2):
                 if intranet[i][j]!=intranet.noEdge:
-                    aaa+=1    
+                    aaa+=1
         aaa=aaa*2
 
         #aacac
@@ -536,7 +536,7 @@ def cc_cycle_vector_anet(net,node,layer=None,anet=None,undefReturn=0.0):
             for i,j in itertools.combinations(intranet[node],2):
                 acaca+=int(anet[i,j])
                 if net[i,j,layer]!=net.noEdge:
-                    acaca+= -1            
+                    acaca+= -1
         acaca=acaca*2
 
         #acacac
@@ -562,7 +562,7 @@ def cc_cycle_vector_anet(net,node,layer=None,anet=None,undefReturn=0.0):
             else:
                 afcac+=len(neighbors)*ledges
 
-        acfca=afa*(len(net.slices[1])-1)        
+        acfca=afa*(len(net.slices[1])-1)
         acfac=afcac
         acfcac=afcac*(len(net.slices[1])-2)
     else:
@@ -571,7 +571,7 @@ def cc_cycle_vector_anet(net,node,layer=None,anet=None,undefReturn=0.0):
             if net.A[layer][node].deg()>=2:
                 for i,j in itertools.combinations(net.A[layer][node],2):
                     if net.A[layer][i][j]!=net.noEdge:
-                        aaa+=1    
+                        aaa+=1
         aaa=aaa*2
 
         #aacac
@@ -591,7 +591,7 @@ def cc_cycle_vector_anet(net,node,layer=None,anet=None,undefReturn=0.0):
                 for i,j in itertools.combinations(net.A[layer][node],2):
                     acaca+=int(anet[i,j])
                     if net[i,j,layer]!=net.noEdge:
-                        acaca+= -1            
+                        acaca+= -1
         acaca=acaca*2
 
         #acacac
@@ -617,10 +617,10 @@ def cc_cycle_vector_anet(net,node,layer=None,anet=None,undefReturn=0.0):
                 else:
                     afcac+=len(neighbors)*ledges
 
-        acfca=afa*(len(net.slices[1])-1)       
+        acfca=afa*(len(net.slices[1])-1)
         acfac=afcac
         acfcac=afcac*(len(net.slices[1])-2)
-        
+
 
     return aaa,aacac,acaac,acaca,acacac, afa,afcac,acfac,acfca,acfcac
 
@@ -691,7 +691,7 @@ def gcc_aw_vector_adj(net):
         return nom,den
 
     import numpy
-    adj,nodes1=net.get_supra_adjacency_matrix()    
+    adj,nodes1=net.get_supra_adjacency_matrix()
     a,nodes2=net.get_supra_adjacency_matrix(includeCouplings=False)
     c=adj-a
 
@@ -776,7 +776,7 @@ def lcc_aw(net,node,layer,w1=1./2.,w2=1./2.,w3=None,returnCVector=False,anet=Non
     -------
     cc : float, or tuple
        The value(s) of the clustering coefficient.
-    
+
     References
     ----------
     "Clustering Coefficients in Multiplex Networks", E. Cozzo et al. , arXiv:1307.6780 [physics.soc-ph]
@@ -816,7 +816,7 @@ def lcc_aw(net,node,layer,w1=1./2.,w2=1./2.,w3=None,returnCVector=False,anet=Non
     else:
         a,b=w1,w2
         t=t1*a**3 + t2*a*b*b + t3*b**3
-        d=d1*a**3 + d2*a*b*b + d3*b**3        
+        d=d1*a**3 + d2*a*b*b + d3*b**3
         if d!=0:
             return t/float(d)
         else:
@@ -840,7 +840,7 @@ def avg_lcc_aw(net,w1=1./2.,w2=1./2.,w3=None,returnCVector=False,anet=None):
     -------
     cc : float, or tuple
        The value(s) of the clustering coefficient.
-    
+
     References
     ----------
     "Clustering Coefficients in Multiplex Networks", E. Cozzo et al. , arXiv:1307.6780 [physics.soc-ph]
@@ -861,7 +861,7 @@ def avg_lcc_aw(net,w1=1./2.,w2=1./2.,w3=None,returnCVector=False,anet=None):
                 c1,c2,c3=c1+tc1,c2+tc2,c3+tc3
             else:
                 c+=lcc_aw(net,node,layer,w1=w1,w2=w2,w3=w3)
-                
+
     if returnCVector:
         return c1/n,c2/n,c3/n
     else:
@@ -888,7 +888,7 @@ def sncc_aw(net,node,w1=1./2.,w2=1./2.,w3=None,returnCVector=False,anet=None):
     -------
     cc : float, or tuple
        The value(s) of the clustering coefficient.
-    
+
     References
     ----------
     "Clustering Coefficients in Multiplex Networks", E. Cozzo et al. , arXiv:1307.6780 [physics.soc-ph]
@@ -938,7 +938,7 @@ def sncc_aw(net,node,w1=1./2.,w2=1./2.,w3=None,returnCVector=False,anet=None):
     else:
         a,b=w1,w2
         t=t1*a**3 + t2*a*b*b + t3*b**3
-        d=d1*a**3 + d2*a*b*b + d3*b**3        
+        d=d1*a**3 + d2*a*b*b + d3*b**3
         if d!=0:
             return t/float(d)
         else:
@@ -955,7 +955,7 @@ def sncc_aw_layercost(net,supernode,a=0.5,b=0.5):
         t3+=acacac
         d3+=acfcac
 
-    if float(a**3*d1+a*b**2*d2+b**3*d3)!=0:        
+    if float(a**3*d1+a*b**2*d2+b**3*d3)!=0:
         return (a**3*t1+a*b**2*t2+b**3*t3)/float(a**3*d1+a*b**2*d2+b**3*d3)
     else:
         return 0
@@ -980,7 +980,7 @@ def gcc_aw(net,w1=1./2.,w2=1./2.,w3=None,returnCVector=False):
     -------
     cc : float, or tuple
        The value(s) of the clustering coefficient.
-    
+
     References
     ----------
     "Clustering Coefficients in Multiplex Networks", E. Cozzo et al. , arXiv:1307.6780 [physics.soc-ph]
@@ -1032,7 +1032,7 @@ def gcc_aw(net,w1=1./2.,w2=1./2.,w3=None,returnCVector=False):
     else:
         a,b=w1,w2
         t=t1*a**3 + t2*a*b*b + t3*b**3
-        d=d1*a**3 + d2*a*b*b + d3*b**3        
+        d=d1*a**3 + d2*a*b*b + d3*b**3
         if d!=0:
             return t/float(d)
         else:
@@ -1054,7 +1054,7 @@ def gcc_moreno2_seplayers(net,w1=1./3.,w2=1./3.,w3=1./3.):
             d3+=2*acfcac
             #print node,layer,aaa,aacac,acaac,acaca,acacac, afa,afcac,acfac,acfca,acfcac
 
-    if w3!=None: 
+    if w3!=None:
         if d3!=0:
             c3=t3/float(d3)
         else:
@@ -1072,7 +1072,7 @@ def gcc_moreno2_seplayers(net,w1=1./3.,w2=1./3.,w3=1./3.):
     else:
         a,b=w1,w2
         t=t1*a**3 + t2*a*b*b + t3*b**3
-        d=d1*a**3 + d2*a*b*b + d3*b**3        
+        d=d1*a**3 + d2*a*b*b + d3*b**3
         if d!=0:
             return t/float(d)
         else:
@@ -1138,7 +1138,7 @@ def gcc_vector_moreno(net):
         return nom,den
 
     import numpy
-    adj,nodes1=net.get_supra_adjacency_matrix()    
+    adj,nodes1=net.get_supra_adjacency_matrix()
     a,nodes2=net.get_supra_adjacency_matrix(includeCouplings=False)
     c=adj-a
 
@@ -1149,7 +1149,7 @@ def gcc_vector_moreno(net):
     p21=a*a*c*a*c + c*a*c*a*a + a*c*a*a*c + c*a*a*c*a + a*c*a*c*a
     ph21=a*a*c + c*a*c*a + a*c*a + c*a*a*c + a*c*a*c
     c2_nom,c2_den=get_nom_den(p21,ph21)
-    
+
     p111=a*c*a*c*a*c + c*a*c*a*c*a #????
     ph111=a*c*a*c + c*a*c*a*c #????
     c3_nom,c3_den=get_nom_den(p111,ph111)
@@ -1181,7 +1181,7 @@ def gcc_vector_moreno2(net):
         return nom,den
 
     import numpy
-    adj,nodes1=net.get_supra_adjacency_matrix()    
+    adj,nodes1=net.get_supra_adjacency_matrix()
     a,nodes2=net.get_supra_adjacency_matrix(includeCouplings=False)
     c=adj-a
 
@@ -1195,7 +1195,7 @@ def gcc_vector_moreno2(net):
     p21=a*a*c*a*c + c*a*c*a*a + a*c*a*a*c + c*a*a*c*a + a*c*a*c*a
     ph21=a*f*c*a*c + c*a*c*f*a + a*c*f*a*c + c*a*f*c*a + a*c*f*c*a
     c2_nom,c2_den=get_nom_den(p21,ph21)
-    
+
     p111=a*c*a*c*a*c + c*a*c*a*c*a #????
     ph111=a*c*f*c*a*c + c*a*c*f*c*a #????
     c3_nom,c3_den=get_nom_den(p111,ph111)
@@ -1398,18 +1398,18 @@ def gcc_contraction_o2(net):
 
 
 def lcc_brodka(net,node,anet=None,threshold=1,undefReturn=0.0):
-    r"""The "cross-layer clustering coefficient" defined by Brodka et al. 
+    r"""The "cross-layer clustering coefficient" defined by Brodka et al.
 
     The clustering coefficient for node :math:`u` is given by the formula (see Ref. [2]):
-    
+
     .. math:: c_{Br,u,t} = \frac{\sum_{\alpha \in L} \sum_{v \in N(u,t)} \sum_{h \in N(u,t)}( \mathcal{W}_{hv\alpha} + \mathcal{W}_{vh\alpha})}{2 |N(u,t)| |L|},
 
-    where :math:`N(u,t) = \{ v : | \{\alpha : \mathcal{A}_{uv\alpha}=1 \wedge \mathcal{A}_{vu\alpha}=1 \}| \leq t \} `,  
-    :math:`L` is the set of layers,  :math:`\mathcal{W}` is the rank-3 weighted adjacency tensor of the multiplex network, 
+    where :math:`N(u,t) = \{ v : | \{\alpha : \mathcal{A}_{uv\alpha}=1 \wedge \mathcal{A}_{vu\alpha}=1 \}| \leq t \} `,
+    :math:`L` is the set of layers,  :math:`\mathcal{W}` is the rank-3 weighted adjacency tensor of the multiplex network,
     and :math:`\mathcal{A}` is the rank-3 unweighted adjacency tensor of the multiplex network.
-       
-    One can get the "multi-layered clustering coefficient in extendend neighborhood" by setting the threshold to one :math:`t=1`, and 
-    the "multi-layered clustering coefficient in reduced neighborhood" by setting the threshold to the total number of layers 
+
+    One can get the "multi-layered clustering coefficient in extendend neighborhood" by setting the threshold to one :math:`t=1`, and
+    the "multi-layered clustering coefficient in reduced neighborhood" by setting the threshold to the total number of layers
     :math:`t=|L|`.
 
     Parameters
@@ -1421,7 +1421,7 @@ def lcc_brodka(net,node,anet=None,threshold=1,undefReturn=0.0):
     anet : MultilayerNetwork with aspects=0
        The aggregated network. If given, it is used to speed up the calculation. NOTE: for undirected networks the
        "normal" aggregation strategy (produced for example by the aggregate function in this library) is suitable,
-       but for directed networks the network needs to be aggregated such that thresholding it will produce the 
+       but for directed networks the network needs to be aggregated such that thresholding it will produce the
        neighborhood sets :math:`N(u,t)`.
     threshold : int, string
        Threshold for number of layers, see Ref. [2]. If 'all', then the threshold is the total number of layers.
@@ -1445,8 +1445,8 @@ def lcc_brodka(net,node,anet=None,threshold=1,undefReturn=0.0):
     Notes
     -----
     This clustering coefficient doesn't return to the typical unweighted clustering coefficient when the edge weights
-    are binary and there is only a single layer. Further, it is not normalized in a way that it's values would be 
-    between 0 an 1. For example, consider a full multiplex network with n nodes and arbitrary number of layers. 
+    are binary and there is only a single layer. Further, it is not normalized in a way that it's values would be
+    between 0 an 1. For example, consider a full multiplex network with n nodes and arbitrary number of layers.
     In this case this clustering cofficient will take value n-2 for all the nodes.
 
     Multiplying all the weights by a constant c will cause the clustering coefficient values to be multiplied by c.
@@ -1466,9 +1466,9 @@ def lcc_brodka(net,node,anet=None,threshold=1,undefReturn=0.0):
         neighborcount={}
         for layer in net.get_layers():
             for neigh in net.A[layer][node].iter_total():
-                neighborcount[neigh]=neighborcount.get(neigh,0)+1            
+                neighborcount[neigh]=neighborcount.get(neigh,0)+1
                 thneighborhood=[]
-        #for neighbor,count in neighborcount.iteritems():            
+        #for neighbor,count in neighborcount.iteritems():
         for neighbor in neighborcount:
             count=neighborcount[neighbor]
             if count >= threshold:
@@ -1503,13 +1503,13 @@ def lcc_battiston1(net,node,undefReturn=0.0):
     r"""The first local clustering coefficient defined by Battiston et al.
 
     The clustering coefficient for node :math:`u` is given by the formula (see Ref. [1]):
-    
+
     .. math:: c_{Bat1,u} = \frac{\sum_{\alpha \in L} \sum_{\beta \in L,\beta \neq \alpha } \sum_{v,h \in V, v \neq u, h \neq u} \mathcal{A}_{uv\alpha} \mathcal{A}_{vh\beta} \mathcal{A}_{hu\alpha}}{\sum_{\alpha \in L}\sum_{v,h \in V, v \neq u, h \neq u} \mathcal{A}_{uv\alpha} \mathcal{A}_{hu\alpha}},
 
     where :math:`V` is the set of nodes, :math:`L` is the set of layers and :math:`\mathcal{A}` is the rank-3 unweighted adjacency tensor of the multiplex network.
 
     lcc_battiston1 is only defined for single-aspect node-aligned multiplex networks with 2 or more layers.
-       
+
     Parameters
     ----------
     net : MultiplexNetwork with aspects=1
@@ -1574,13 +1574,13 @@ def lcc_battiston2(net,node,undefReturn=0.0):
     r"""The second local clustering coefficient defined by Battiston et al.
 
     The clustering coefficient for node :math:`u` is given by the formula (see Ref. [1]):
-    
+
     .. math:: c_{Bat2,u} = \frac{\sum_{\alpha \in L} \sum_{\beta \in L,\beta \neq \alpha } \sum_{\gamma \in L,\gamma \neq \alpha, \beta } \sum_{v,h \in V, v \neq u, h \neq u} \mathcal{A}_{uv\alpha} \mathcal{A}_{vh\gamma} \mathcal{A}_{hu\beta}}{\sum_{\alpha \in L} \sum_{\beta \in L,\beta \neq \alpha }\sum_{v,h \in V, v \neq u, h \neq u} \mathcal{A}_{uv\alpha} \mathcal{A}_{hu\beta}},
 
     where :math:`V` is the set of nodes, :math:`L` is the set of layers and :math:`\mathcal{A}` is the rank-3 unweighted adjacency tensor of the multiplex network.
 
     lcc_battiston2 is only defined for single-aspect node-aligned multiplex networks with 3 or more layers.
-       
+
     Parameters
     ----------
     net : MultiplexNetwork with aspects=1
@@ -1641,7 +1641,7 @@ def lcc_battiston2(net,node,undefReturn=0.0):
                                     if h!=node:
                                         if net[node,v,alpha] != net.noEdge and net[v,h,gamma] != net.noEdge and net[h,node,beta] != net.noEdge:
                                             s+=1
-    b=len(net.get_layers())                                       
+    b=len(net.get_layers())
     return s/float(d)/float(b-2)
 
 
@@ -1650,7 +1650,7 @@ def lcc_criado(net,node,undefReturn=0.0,anet=None):
     r"""The local clustering coefficient defined by Criado et al.
 
     The clustering coefficient for node :math:`u` is given by the formula (see Ref. [1]):
-    
+
     .. math:: c_{Cr,u} = \frac{2 \sum_{\alpha \in L} | \bar{E_\alpha}(u) | }{\sum_{\alpha \in L} |\Gamma_\alpha (u)| (|\Gamma_\alpha (u) -1|)}
 
     where :math:`L` is the set of layers, :math:`\Gamma_\alpha (u)=\Gamma (u) \cap V_\alpha`, where :math:`\Gamma (u)` is the set of neighbors
@@ -1658,7 +1658,7 @@ def lcc_criado(net,node,undefReturn=0.0,anet=None):
     set of edges in the subgraph of the aggregated network spanned by :math:`\Gamma_\alpha (u)`.
 
     lcc_criado is only defined for a single-aspect multiplex network. The network doesn't need to be node-aligned.
-       
+
     Parameters
     ----------
     net : MultiplexNetwork with aspects=1
@@ -1683,7 +1683,7 @@ def lcc_criado(net,node,undefReturn=0.0,anet=None):
     cc_barrett : Local multiplex clustering coefficient defined by Barrett et al.
     """
     s,d=0,0
-    
+
     if anet==None:
         nu=set()
         for alpha in net.get_layers():
@@ -1699,7 +1699,7 @@ def lcc_criado(net,node,undefReturn=0.0,anet=None):
                 if neighbor2 in nalphau:
                     s+=1
         d+=len(nalphau)*(len(nalphau)-1)
-    
+
     if d==0:
         return undefReturn
     else:

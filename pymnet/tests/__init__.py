@@ -1,12 +1,12 @@
-from .net_test import test_net
-from .cc_test import test_cc
-from .diagnostics_test import test_diagnostics
-from .io_test import test_io
-from .models_test import test_models
-from .transforms_test import test_transforms
-from .visuals_test import test_visuals
-from .isomorphisms_test import test_isomorphisms
-from .sampling_test import test_sampling
+from pymnet.tests.net_test import test_net
+from pymnet.tests.cc_test import test_cc
+from pymnet.tests.diagnostics_test import test_diagnostics
+from pymnet.tests.io_test import test_io
+from pymnet.tests.models_test import test_models
+from pymnet.tests.transforms_test import test_transforms
+from pymnet.tests.visuals_test import test_visuals
+from pymnet.tests.isomorphisms_test import test_isomorphisms
+from pymnet.tests.sampling_test import test_sampling
 
 try:
     import networkx

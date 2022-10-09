@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pymnet import *
 from timeit import Timer
 
@@ -32,4 +33,4 @@ timer3=Timer(aggr)
 result3=timer3.timeit(number=100)
 
 
-print result,result2,result3
+print(result,result2,result3)

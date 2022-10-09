@@ -8,7 +8,7 @@ except NameError:
     xrange = range
 ######
 
-from .net import MultilayerNetwork,MultiplexNetwork
+from pymnet.net import MultilayerNetwork,MultiplexNetwork
 import math,random
 
 
