@@ -87,7 +87,8 @@ class TestNxwrap(unittest.TestCase):
         self.assertEqual(knet.__class__, net.MultilayerNetwork)
         self.assertEqual(set(range(34)), set(knet))
         self.assertEqual(len(knet.edges), 78)
-        self.assertEqual(knet[0, 1], 1)
+        # self.assertEqual(knet[0, 1], 1)
+        self.assertEqual(knet[0, 1], 4)
         # self.assertNotEqual(networkx.Graph,nxwrap.MonoplexGraphNetworkxNew)
 
     def test_monoplex_tuples_nxversion1(self):
