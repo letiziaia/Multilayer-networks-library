@@ -12,7 +12,19 @@ setup(
     author="Mikko Kivelä",
     author_email="mikko.kivela@iki.fi",
     install_requires=[
-        "numpy", "scipy", "pybind11", "Cython", "networkx", "matplotlib<=3.3.0"
+        "numpy",
+        "scipy",
+        "pybind11",
+        "Cython",
+        "networkx",
+        "matplotlib<=3.3.0",
     ],
-    packages=["pymnet", "pymnet.tests","pymnet.visuals","pymnet.visuals.drawbackends","pymnet.isomorphisms","pymnet.graphlets"]
+    packages=[
+        "pymnet",
+        "pymnet.tests",
+        "pymnet.visuals",
+        "pymnet.visuals.drawbackends",
+        "pymnet.isomorphisms",
+        "pymnet.graphlets",
+    ],
 )

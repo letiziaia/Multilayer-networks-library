@@ -27,7 +27,7 @@ class MultilayerNetwork(object):
 
     See Reference [1] for background on the definition of this class.
 
-    There are several ways of accessing the edges and nodes of the network. If there 
+    There are several ways of accessing the edges and nodes of the network. If there
     is a single aspect, then the following notation can be used:
 
     >>> net[i,s]                   #node i at layer s
@@ -39,7 +39,7 @@ class MultilayerNetwork(object):
     >>> net[i,:,s,:] == net[i,s]   #node i at layer s
     >>> net[i,j,s,:]               #node i at layer s, but only links to j are visible
     >>> net[i,:,s,r]               #node i at layer s, but only links to layer r are visible
-    >>> net[i,:,s] == net[i,:,s,s] 
+    >>> net[i,:,s] == net[i,:,s,s]
 
     Similar notation holds for two (or more) aspects:
 
@@ -66,15 +66,15 @@ class MultilayerNetwork(object):
 
     Notes
     -----
-    The default data structure behind this class is a graph similar to the 
-    one described in Reference [1] implemented with nested dictionaries. 
+    The default data structure behind this class is a graph similar to the
+    one described in Reference [1] implemented with nested dictionaries.
     The downside to this implementation is that, for example, iterating through
     all the inter-layer links is not possible without inspecting also the
     inter-layer links.
 
     References
     ----------
-    [1] Multilayer Networks. Mikko Kivela, Alexandre Arenas, Marc Barthelemy, 
+    [1] Multilayer Networks. Mikko Kivela, Alexandre Arenas, Marc Barthelemy,
     James P. Gleeson, Yamir Moreno, Mason A. Porter, arXiv:1309.7233 [physics.soc-ph]
 
     See also
@@ -83,11 +83,7 @@ class MultilayerNetwork(object):
 
     """
 
-    def __init__(self,
-                 aspects=0,
-                 noEdge=0,
-                 directed=False,
-                 fullyInterconnected=True):
+    def __init__(self, aspects=0, noEdge=0, directed=False, fullyInterconnected=True):
         assert aspects >= 0
 
         self.aspects = aspects
@@ -147,7 +143,7 @@ class MultilayerNetwork(object):
     # @classmehtod
     def _nodes_to_link(self, node1, node2):
         """Returns a link when tuple of nodes is given in the graph representing
-        the multislice structure. I.e. when given (i,s_1,...,s_d),(j,r_1,...,r_d) 
+        the multislice structure. I.e. when given (i,s_1,...,s_d),(j,r_1,...,r_d)
         (i,j,s_1,r_1, ... ,s_d,r_d) is returned.
         """
         assert len(node1) == len(node2)
@@ -159,8 +155,8 @@ class MultilayerNetwork(object):
 
     # @classmehtod
     def _short_link_to_link(self, slink):
-        """ Returns a full link for the shortened version of the link. That is,
-        if (i,j,s_1,...,s_d) is given as input, then (i,j,s_1,s_1,...,s_d,s_d) is 
+        """Returns a full link for the shortened version of the link. That is,
+        if (i,j,s_1,...,s_d) is given as input, then (i,j,s_1,s_1,...,s_d,s_d) is
         returned.
         """
         l = list(slink[:2])
@@ -180,9 +176,16 @@ class MultilayerNetwork(object):
         if not self.fullyInterconnected:
             if self._nodeToLayers != other._nodeToLayers:
                 return False
-        if type(self) is type(
-                other) and self.directed == other.directed and self.directed == other.directed and self.aspects == other.aspects and self.fullyInterconnected == other.fullyInterconnected and self.noEdge == other.noEdge and self.slices == other.slices and len(
-                self.edges) == len(other.edges):
+        if (
+            type(self) is type(other)
+            and self.directed == other.directed
+            and self.directed == other.directed
+            and self.aspects == other.aspects
+            and self.fullyInterconnected == other.fullyInterconnected
+            and self.noEdge == other.noEdge
+            and self.slices == other.slices
+            and len(self.edges) == len(other.edges)
+        ):
             for edge in self.edges:
                 if self[edge[:-1]] != other[edge[:-1]]:
                     return False
@@ -222,8 +225,7 @@ class MultilayerNetwork(object):
             self._add_node_to_layer(node, layer)
 
     def _add_node_to_layer(self, node, layer):
-        """ Add node to layer. Network must not be node-aligned.
-        """
+        """Add node to layer. Network must not be node-aligned."""
         if node not in self._nodeToLayers:
             self._nodeToLayers[node] = set()
         self._nodeToLayers[node].add(layer)
@@ -252,7 +254,7 @@ class MultilayerNetwork(object):
 
     def _get_link(self, link):
         """Return link weight or 0 if no link.
-        
+
         This is a private method, so no sanity checks on the parameters are
         done at this point.
 
@@ -274,11 +276,19 @@ class MultilayerNetwork(object):
                 if node2 in self._net[node1]:
                     if self.directed:
                         if node1 == node2 and node2 in self._net[node1]:
-                            self._totalDegree[node1] = self._totalDegree.get(node1, 0) - 1
+                            self._totalDegree[node1] = (
+                                self._totalDegree.get(node1, 0) - 1
+                            )
                         else:
-                            if node1 not in self._rnet or node2 not in self._rnet[node1]:
+                            if (
+                                node1 not in self._rnet
+                                or node2 not in self._rnet[node1]
+                            ):
                                 self._totalDegree[node1] = self._totalDegree[node1] - 1
-                            if node2 not in self._rnet or node1 not in self._rnet[node2]:
+                            if (
+                                node2 not in self._rnet
+                                or node1 not in self._rnet[node2]
+                            ):
                                 self._totalDegree[node2] = self._totalDegree[node2] - 1
                         del self._rnet[node2][node1]
                     else:
@@ -341,8 +351,7 @@ class MultilayerNetwork(object):
             return len(list(self._iter_neighbors_out(node, dims)))
 
     def _get_degree_total_dir(self, node, dims=None):
-        """Returns the total degree of a _directed_ multilayer network.
-        """
+        """Returns the total degree of a _directed_ multilayer network."""
         assert self.directed
         if dims == None:
             return self._totalDegree.get(node, 0)
@@ -350,8 +359,7 @@ class MultilayerNetwork(object):
             return len(list(self._iter_neighbors_total(node, dims)))
 
     def _get_degree_in_dir(self, node, dims=None):
-        """Returns the in-degree of a _directed_ multilayer network.
-        """
+        """Returns the in-degree of a _directed_ multilayer network."""
         assert self.directed
         if dims == None:
             if node in self._rnet:
@@ -381,11 +389,21 @@ class MultilayerNetwork(object):
 
     def _get_strength_in_dir(self, node, dims=None):
         """Private method returning nodes in-strenght."""
-        return sum(map(lambda n: self._get_link(self._nodes_to_link(n, node)), self._iter_neighbors_in(node, dims)))
+        return sum(
+            map(
+                lambda n: self._get_link(self._nodes_to_link(n, node)),
+                self._iter_neighbors_in(node, dims),
+            )
+        )
 
     def _get_strength_out(self, node, dims=None):
         """Private method returning nodes out-strenght."""
-        return sum(map(lambda n: self._get_link(self._nodes_to_link(node, n)), self._iter_neighbors_out(node, dims)))
+        return sum(
+            map(
+                lambda n: self._get_link(self._nodes_to_link(node, n)),
+                self._iter_neighbors_out(node, dims),
+            )
+        )
 
     def _get_strength_total_dir(self, node, dims=None):
         """Private method returning nodes total strenght (sum of in- and out-strength)."""
@@ -428,7 +446,12 @@ class MultilayerNetwork(object):
                     yield neigh
             else:
                 for neigh in self._net[node]:
-                    if all(map(lambda i: dims[i] == None or neigh[i] == dims[i], range(len(dims)))):
+                    if all(
+                        map(
+                            lambda i: dims[i] == None or neigh[i] == dims[i],
+                            range(len(dims)),
+                        )
+                    ):
                         yield neigh
 
     def _iter_neighbors_in_dir(self, node, dims=None):
@@ -439,7 +462,12 @@ class MultilayerNetwork(object):
                     yield neigh
             else:
                 for neigh in self._rnet[node]:
-                    if all(map(lambda i: dims[i] == None or neigh[i] == dims[i], range(len(dims)))):
+                    if all(
+                        map(
+                            lambda i: dims[i] == None or neigh[i] == dims[i],
+                            range(len(dims)),
+                        )
+                    ):
                         yield neigh
 
     def _iter_neighbors_total_dir(self, node, dims=None):
@@ -483,7 +511,7 @@ class MultilayerNetwork(object):
 
         i,:,s,:,x = i,:,s,:,x,x
         i,s,:,x,: = i,i,s,:,x,:
-        
+
 
         """
         d = self.aspects + 1
@@ -531,7 +559,9 @@ class MultilayerNetwork(object):
         # There might be new nodes, add them to sets of nodes
         if self.fullyInterconnected:
             for i in range(2):
-                self.add_layer(link[i], int(math.floor(i / 2)))  # just d/2 would work, but ugly
+                self.add_layer(
+                    link[i], int(math.floor(i / 2))
+                )  # just d/2 would work, but ugly
         else:
             if self.aspects == 1:
                 self.add_node(link[0], layer=link[2])
@@ -542,13 +572,14 @@ class MultilayerNetwork(object):
                 self.add_node(n2[0], layer=n2[1:])
 
         for i in range(2, 2 * d):
-            self.add_layer(link[i], int(math.floor(i / 2)))  # just d/2 would work, but ugly
+            self.add_layer(
+                link[i], int(math.floor(i / 2))
+            )  # just d/2 would work, but ugly
 
         self._set_link(link, val)
 
     def get_layers(self, aspect=1):
-        """Returns the set of (elementary) layers (in a given aspect).
-        """
+        """Returns the set of (elementary) layers (in a given aspect)."""
         return self.slices[aspect]
 
     def iter_nodes(self, layer=None):
@@ -565,16 +596,16 @@ class MultilayerNetwork(object):
                     yield node
 
     def __iter__(self):
-        """Iterates over all nodes.
-        """
+        """Iterates over all nodes."""
         for node in self.slices[0]:
             yield node
 
     def iter_node_layers(self):
-        """ Iterate over all node-layer pairs.
-        """
+        """Iterate over all node-layer pairs."""
         if self.fullyInterconnected:
-            for nl in itertools.product(*map(lambda i: self.slices[i], range(len(self.slices)))):
+            for nl in itertools.product(
+                *map(lambda i: self.slices[i], range(len(self.slices)))
+            ):
                 yield nl
         else:
             if self.aspects == 1:
@@ -587,7 +618,7 @@ class MultilayerNetwork(object):
                         yield (node,) + layer
 
     def iter_layers(self, aspect=None):
-        """ Iterate over all layers.
+        """Iterate over all layers.
 
         If network has multiple aspects, tuples of all layer combinations are iterated
         over. If aspect is specified and there are more than a single aspect, then elementary
@@ -600,15 +631,26 @@ class MultilayerNetwork(object):
                 yield l
         else:
             if self.aspects > 1:
-                for l in itertools.product(*map(lambda i: self.slices[i], range(1, len(self.slices)))):
+                for l in itertools.product(
+                    *map(lambda i: self.slices[i], range(1, len(self.slices)))
+                ):
                     yield l
             elif self.aspects == 1:
                 for l in self.slices[1]:
                     yield l
 
     def _write_flattened(self, output):
-        nodes = map(lambda x: tuple(reversed(x)), sorted(
-            itertools.product(*map(lambda i: sorted(self.slices[i]), reversed(range(len(self.slices)))))))
+        nodes = map(
+            lambda x: tuple(reversed(x)),
+            sorted(
+                itertools.product(
+                    *map(
+                        lambda i: sorted(self.slices[i]),
+                        reversed(range(len(self.slices))),
+                    )
+                )
+            ),
+        )
         for i in nodes:
             row = [str(self[i][j]) for j in nodes]
             output.write(" ".join(row) + "\n")
@@ -633,9 +675,21 @@ class MultilayerNetwork(object):
            of the elements in the list and the supra-adjacency matrix are the same.
         """
         import numpy
+
         if self.aspects > 0:
-            nodes = list(map(lambda x: tuple(reversed(x)), sorted(
-                itertools.product(*map(lambda i: sorted(self.slices[i]), reversed(range(len(self.slices))))))))
+            nodes = list(
+                map(
+                    lambda x: tuple(reversed(x)),
+                    sorted(
+                        itertools.product(
+                            *map(
+                                lambda i: sorted(self.slices[i]),
+                                reversed(range(len(self.slices))),
+                            )
+                        )
+                    ),
+                )
+            )
             matrix = numpy.zeros((len(nodes), len(nodes)), dtype=float)
             for i_index, i in enumerate(nodes):
                 for j_index, j in enumerate(nodes):
@@ -653,7 +707,7 @@ class MultilayerNetwork(object):
 
 
 class MultilayerNode(object):
-    """A node in a MultilayerNetwork. 
+    """A node in a MultilayerNetwork.
 
     The node objects are generated from the MultilayerNetwork objects with the
     __getitem__ method. The nodes can be used to access their neighboring edges,
@@ -663,8 +717,7 @@ class MultilayerNode(object):
 
     # net[1,'a','x'][:,:,'y']=net[1,:,'a',:,'x','y']
     def __init__(self, node, mnet, layers=None):
-        """A node in multilayer network. 
-        """
+        """A node in multilayer network."""
         self.node = node
         self.mnet = mnet
         self.layers = layers
@@ -687,64 +740,56 @@ class MultilayerNode(object):
         return self.deg()
 
     def deg(self, *layers):
-        """Returns the degree of the node.
-        """
+        """Returns the degree of the node."""
         assert len(layers) == 0 or len(layers) == (self.mnet.aspects + 1)
         if layers == ():
             layers = self.layers
         return self.mnet._get_degree(self.node, layers)
 
     def deg_total(self, *layers):
-        """Returns the total degree of the node.
-        """
+        """Returns the total degree of the node."""
         assert len(layers) == 0 or len(layers) == (self.mnet.aspects + 1)
         if layers == ():
             layers = self.layers
         return self.mnet._get_degree_total(self.node, layers)
 
     def deg_in(self, *layers):
-        """Returns the in-degree of the node.
-        """
+        """Returns the in-degree of the node."""
         assert len(layers) == 0 or len(layers) == (self.mnet.aspects + 1)
         if layers == ():
             layers = self.layers
         return self.mnet._get_degree_in(self.node, layers)
 
     def deg_out(self, *layers):
-        """Returns the out-degree of the node.
-        """
+        """Returns the out-degree of the node."""
         assert len(layers) == 0 or len(layers) == (self.mnet.aspects + 1)
         if layers == ():
             layers = self.layers
         return self.mnet._get_degree_out(self.node, layers)
 
     def str(self, *layers):
-        """Returns the weighted degree, i.e. the strength, of the node.
-        """
+        """Returns the weighted degree, i.e. the strength, of the node."""
         assert len(layers) == 0 or len(layers) == (self.mnet.aspects + 1)
         if layers == ():
             layers = self.layers
         return self.mnet._get_strength(self.node, layers)
 
     def str_total(self, *layers):
-        """Returns the weighted totaldegree, i.e. the strength, of the node.
-        """
+        """Returns the weighted totaldegree, i.e. the strength, of the node."""
         assert len(layers) == 0 or len(layers) == (self.mnet.aspects + 1)
         if layers == ():
             layers = self.layers
         return self.mnet._get_strength_total(self.node, layers)
 
     def str_in(self, *layers):
-        """Returns the weighted in-degree, i.e. the strength, of the node.
-        """
+        """Returns the weighted in-degree, i.e. the strength, of the node."""
         assert len(layers) == 0 or len(layers) == (self.mnet.aspects + 1)
         if layers == ():
             layers = self.layers
         return self.mnet._get_strength_in(self.node, layers)
 
     def str_out(self, *layers):
-        """Returns the weighted out-degree, i.e. the strength, of the node.
-        """
+        """Returns the weighted out-degree, i.e. the strength, of the node."""
         assert len(layers) == 0 or len(layers) == (self.mnet.aspects + 1)
         if layers == ():
             layers = self.layers
@@ -782,8 +827,7 @@ class MultilayerEdges:
         self.net = net
 
     def __iter__(self):
-        """Edge iterator.
-        """
+        """Edge iterator."""
         if self.net.directed:
             for node in itertools.product(*self.net.slices):
                 for neigh in self.net[node].iter_out():
@@ -834,7 +878,9 @@ class MultiplexIntraNetDict(MutableMapping):
         return len(self._dict)
 
     def __setitem__(self, key, val):
-        assert isinstance(val, MultilayerNetwork), "Invalid type of intra-layer network."
+        assert isinstance(
+            val, MultilayerNetwork
+        ), "Invalid type of intra-layer network."
         assert val.aspects == 0, "Intra-layer networks need to be monoplex networks."
 
         if key in self._dict:
@@ -889,11 +935,11 @@ class MultiplexNetwork(MultilayerNetwork):
     Parameters
     ----------
     couplings : list, str, tuple, None, MultilayerNetwork
-       Parameter determining how the layers are coupled, i.e. what 
+       Parameter determining how the layers are coupled, i.e. what
        inter-layer edges are present.
-       If string, the parameter must be on of the  policy types: 
+       If string, the parameter must be on of the  policy types:
        'ordinal', 'categorical', or 'none'. None is same as 'none'. Tuple
-       can be used to give parameters to the coupling types, e.g. 
+       can be used to give parameters to the coupling types, e.g.
        ('categorical',1.0) is categorical coupling with inter-edge weights
        equal to 1.0. If coupling is a network, it must be a monoplex one
        with the nodes corresponding to layer names. If a list is given, then
@@ -908,11 +954,11 @@ class MultiplexNetwork(MultilayerNetwork):
     fullyInterconnected : bool
        Determines if the network is fully interconnected, i.e. all nodes
        are shared between all layers.
-    
+
     Notes
     -----
     The default implementation for this type of networks is 'sequence of
-    graphs'. That is, each intra-layer network is stored separately and 
+    graphs'. That is, each intra-layer network is stored separately and
     accessing and modifying the intra-layer networks is independent of the
     other intra-layer networks. The couplings edges are not stored explicitely
     but they are only generated when needed.
@@ -923,7 +969,9 @@ class MultiplexNetwork(MultilayerNetwork):
 
     """
 
-    def __init__(self, couplings=None, directed=False, noEdge=0, fullyInterconnected=True):
+    def __init__(
+        self, couplings=None, directed=False, noEdge=0, fullyInterconnected=True
+    ):
         self.directed = directed
         self.noEdge = noEdge
 
@@ -934,9 +982,13 @@ class MultiplexNetwork(MultilayerNetwork):
         coupling_types = ["categorical", "ordinal", "none"]
         self.couplings = []
 
-        if isinstance(couplings, tuple) or isinstance(couplings, "".__class__) or isinstance(couplings,
-                                                                                             u"".__class__) or isinstance(
-                couplings, MultilayerNetwork) or couplings == None:
+        if (
+            isinstance(couplings, tuple)
+            or isinstance(couplings, "".__class__)
+            or isinstance(couplings, "".__class__)
+            or isinstance(couplings, MultilayerNetwork)
+            or couplings == None
+        ):
             couplings = [couplings]
 
         if isinstance(couplings, list):
@@ -950,7 +1002,9 @@ class MultiplexNetwork(MultilayerNetwork):
                 elif isinstance(coupling, MultilayerNetwork):
                     assert coupling.aspects == 0
                     self.couplings.append((coupling,))
-                elif isinstance(coupling, "".__class__) or isinstance(coupling, u"".__class__):
+                elif isinstance(coupling, "".__class__) or isinstance(
+                    coupling, "".__class__
+                ):
                     assert str(coupling) in coupling_types
                     self.couplings.append((coupling, 1.0))
                 elif coupling == None:
@@ -971,8 +1025,7 @@ class MultiplexNetwork(MultilayerNetwork):
         self._init_directions()
 
     def _get_edge_inter_aspects(self, link):
-        r"""Returns list of aspects where the two nodes of $G_M$ differ.
-        """
+        r"""Returns list of aspects where the two nodes of $G_M$ differ."""
         dims = []
         for d in range(self.aspects + 1):
             if link[2 * d] != link[2 * d + 1]:
@@ -980,15 +1033,14 @@ class MultiplexNetwork(MultilayerNetwork):
         return dims
 
     def _get_A_with_tuple(self, layer):
-        """Return self.A. Layer must be given as tuple.
-        """
+        """Return self.A. Layer must be given as tuple."""
         if self.aspects == 1:
             return self.A[layer[0]]
         else:
             return self.A[layer]
 
     def add_layer(self, layer, aspect=1):
-        """ Adds node or a layer to given aspect in the network.
+        """Adds node or a layer to given aspect in the network.
 
         Examples
         --------
@@ -1015,37 +1067,44 @@ class MultiplexNetwork(MultilayerNetwork):
             # MultilayerNetwork.add_layer(self,layer,aspect)
 
     def _has_layer_with_tuple(self, layer):
-        """Return true if layer in self.A. Layer must be given as tuple.
-        """
+        """Return true if layer in self.A. Layer must be given as tuple."""
         if self.aspects == 1:
             return layer[0] in self.A
         else:
             return layer in self.A
 
     def _get_link(self, link):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         d = self._get_edge_inter_aspects(link)
-        if len(d) == 1:  # not a self-link, or link with multiple different cross-aspects
+        if (
+            len(d) == 1
+        ):  # not a self-link, or link with multiple different cross-aspects
             if d[0] > 0:
                 assert link[0] == link[1]
                 if not link[0] in self.slices[0]:
                     return self.noEdge
                 if not self.fullyInterconnected:
                     supernode1, supernode2 = self._link_to_nodes(link)
-                    if not (link[0] in self._get_A_with_tuple(supernode1[1:]).slices[0] and link[0] in
-                            self._get_A_with_tuple(supernode2[1:]).slices[0]):
+                    if not (
+                        link[0] in self._get_A_with_tuple(supernode1[1:]).slices[0]
+                        and link[0] in self._get_A_with_tuple(supernode2[1:]).slices[0]
+                    ):
                         return self.noEdge
                 coupling = self.couplings[d[0] - 1]
                 if coupling[0] == "categorical":
                     return coupling[1]
                 elif coupling[0] == "ordinal":
-                    if link[2 * d[0]] + 1 == link[2 * d[0] + 1] or link[2 * d[0]] == link[2 * d[0] + 1] + 1:
+                    if (
+                        link[2 * d[0]] + 1 == link[2 * d[0] + 1]
+                        or link[2 * d[0]] == link[2 * d[0] + 1] + 1
+                    ):
                         return coupling[1]
                     else:
                         return self.noEdge
                 elif isinstance(coupling[0], MultilayerNetwork):
-                    return self.couplings[d[0] - 1][0][link[2 * d[0]], link[2 * d[0] + 1]]
+                    return self.couplings[d[0] - 1][0][
+                        link[2 * d[0]], link[2 * d[0] + 1]
+                    ]
                 else:
                     raise Exception("Coupling not implemented: " + str(coupling))
             else:
@@ -1057,8 +1116,7 @@ class MultiplexNetwork(MultilayerNetwork):
             return self.noEdge
 
     def _set_link(self, link, value):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         d = self._get_edge_inter_aspects(link)
         if len(d) == 1 and d[0] == 0:
             S = link[2::2]
@@ -1082,8 +1140,15 @@ class MultiplexNetwork(MultilayerNetwork):
                     if self.aspects == 1:
                         return len(self._nodeToLayers[supernode[0]]) - 1
                     else:
-                        return len(
-                            filter(lambda x: x[aspect] == supernode[aspect], self._nodeToLayers[supernode[0]])) - 1
+                        return (
+                            len(
+                                filter(
+                                    lambda x: x[aspect] == supernode[aspect],
+                                    self._nodeToLayers[supernode[0]],
+                                )
+                            )
+                            - 1
+                        )
                 else:
                     return 0
         elif coupling_type == "ordinal":
@@ -1092,8 +1157,12 @@ class MultiplexNetwork(MultilayerNetwork):
                 return int(up in self.slices[aspect]) + int(down in self.slices[aspect])
             else:
                 return int(
-                    supernode[:aspect] + (up,) + supernode[aspect + 1:] in self._nodeToLayers[supernode[0]]) + int(
-                    supernode[:aspect] + (down,) + supernode[aspect + 1:] in self._nodeToLayers[supernode[0]])
+                    supernode[:aspect] + (up,) + supernode[aspect + 1 :]
+                    in self._nodeToLayers[supernode[0]]
+                ) + int(
+                    supernode[:aspect] + (down,) + supernode[aspect + 1 :]
+                    in self._nodeToLayers[supernode[0]]
+                )
         elif isinstance(coupling_type, MultilayerNetwork):
             if direction == "tot":
                 return self.couplings[aspect - 1][0][supernode[aspect]].deg_total()
@@ -1119,7 +1188,7 @@ class MultiplexNetwork(MultilayerNetwork):
             if self.fullyInterconnected:
                 for n in self.slices[aspect]:
                     if n != supernode[aspect]:
-                        yield supernode[:aspect] + (n,) + supernode[aspect + 1:]
+                        yield supernode[:aspect] + (n,) + supernode[aspect + 1 :]
             elif supernode[0] in self._get_A_with_tuple(supernode[1:]).slices[0]:
                 for layers in self._nodeToLayers[supernode[0]]:
                     if self.aspects > 1:
@@ -1132,14 +1201,20 @@ class MultiplexNetwork(MultilayerNetwork):
             up, down = supernode[aspect] + 1, supernode[aspect] - 1
             if self.fullyInterconnected:
                 if up in self.slices[aspect]:
-                    yield supernode[:aspect] + (up,) + supernode[aspect + 1:]
+                    yield supernode[:aspect] + (up,) + supernode[aspect + 1 :]
                 if down in self.slices[aspect]:
-                    yield supernode[:aspect] + (down,) + supernode[aspect + 1:]
+                    yield supernode[:aspect] + (down,) + supernode[aspect + 1 :]
             else:
-                if supernode[1:aspect] + (up,) + supernode[aspect + 1:] in self._nodeToLayers[supernode[0]]:
-                    yield supernode[:aspect] + (up,) + supernode[aspect + 1:]
-                if supernode[1:aspect] + (down,) + supernode[aspect + 1:] in self._nodeToLayers[supernode[0]]:
-                    yield supernode[:aspect] + (down,) + supernode[aspect + 1:]
+                if (
+                    supernode[1:aspect] + (up,) + supernode[aspect + 1 :]
+                    in self._nodeToLayers[supernode[0]]
+                ):
+                    yield supernode[:aspect] + (up,) + supernode[aspect + 1 :]
+                if (
+                    supernode[1:aspect] + (down,) + supernode[aspect + 1 :]
+                    in self._nodeToLayers[supernode[0]]
+                ):
+                    yield supernode[:aspect] + (down,) + supernode[aspect + 1 :]
         elif coupling_type == "none":
             pass
         else:
@@ -1160,8 +1235,7 @@ class MultiplexNetwork(MultilayerNetwork):
                 yield d
 
     def _get_degree_total_dir(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         k = 0
         for d in self._select_dimensions(node, dims):
             if d == 0:
@@ -1171,8 +1245,7 @@ class MultiplexNetwork(MultilayerNetwork):
         return k
 
     def _get_degree_in_dir(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         k = 0
         for d in self._select_dimensions(node, dims):
             if d == 0:
@@ -1182,8 +1255,7 @@ class MultiplexNetwork(MultilayerNetwork):
         return k
 
     def _get_degree_out(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         k = 0
         for d in self._select_dimensions(node, dims):
             if d == 0:
@@ -1193,8 +1265,7 @@ class MultiplexNetwork(MultilayerNetwork):
         return k
 
     def _get_strength_total_dir(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         s = 0
         for d in self._select_dimensions(node, dims):
             if d == 0:
@@ -1204,8 +1275,7 @@ class MultiplexNetwork(MultilayerNetwork):
         return s
 
     def _get_strength_in_dir(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         s = 0
         for d in self._select_dimensions(node, dims):
             if d == 0:
@@ -1215,8 +1285,7 @@ class MultiplexNetwork(MultilayerNetwork):
         return s
 
     def _get_strength_out(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         s = 0
         for d in self._select_dimensions(node, dims):
             if d == 0:
@@ -1226,33 +1295,36 @@ class MultiplexNetwork(MultilayerNetwork):
         return s
 
     def _iter_neighbors_total_dir(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         for d in self._select_dimensions(node, dims):
             if d == 0:
-                for n in self._get_A_with_tuple(node[1:])._iter_neighbors_total((node[0],)):
+                for n in self._get_A_with_tuple(node[1:])._iter_neighbors_total(
+                    (node[0],)
+                ):
                     yield (n[0],) + node[1:]
             else:
                 for n in self._iter_dim(node, d, direction="tot"):
                     yield n
 
     def _iter_neighbors_in_dir(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         for d in self._select_dimensions(node, dims):
             if d == 0:
-                for n in self._get_A_with_tuple(node[1:])._iter_neighbors_in((node[0],)):
+                for n in self._get_A_with_tuple(node[1:])._iter_neighbors_in(
+                    (node[0],)
+                ):
                     yield (n[0],) + node[1:]
             else:
                 for n in self._iter_dim(node, d, direction="in"):
                     yield n
 
     def _iter_neighbors_out(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         for d in self._select_dimensions(node, dims):
             if d == 0:
-                for n in self._get_A_with_tuple(node[1:])._iter_neighbors_out((node[0],)):
+                for n in self._get_A_with_tuple(node[1:])._iter_neighbors_out(
+                    (node[0],)
+                ):
                     yield (n[0],) + node[1:]
             else:
                 for n in self._iter_dim(node, d, direction="out"):
@@ -1260,7 +1332,15 @@ class MultiplexNetwork(MultilayerNetwork):
 
     def __eq__(self, other):
         if type(self) is type(other):
-            if self.directed == other.directed and self.directed == other.directed and self.aspects == other.aspects and self.fullyInterconnected == other.fullyInterconnected and self.noEdge == other.noEdge and self.slices == other.slices and self.couplings == other.couplings:
+            if (
+                self.directed == other.directed
+                and self.directed == other.directed
+                and self.aspects == other.aspects
+                and self.fullyInterconnected == other.fullyInterconnected
+                and self.noEdge == other.noEdge
+                and self.slices == other.slices
+                and self.couplings == other.couplings
+            ):
                 for layer in self.iter_layers():
                     if self.A[layer] != other.A[layer]:
                         return False
@@ -1280,7 +1360,7 @@ class MultiplexNetwork(MultilayerNetwork):
                 yield node
 
     def _add_node_to_layer(self, node, layer):
-        """ Add node to layer. Network must not be node-aligned and the layer
+        """Add node to layer. Network must not be node-aligned and the layer
         must exist.
         """
         if node not in self._nodeToLayers:
@@ -1309,23 +1389,19 @@ class FlatMultilayerNetworkView(MultilayerNetwork):
         pass
 
     def _get_link(self, link):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         return self.mnet[tuple(itertools.chain(*zip(*a)))]
 
     def _set_link(self, link, value):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         raise NotImplemented("yet.")
 
     def _get_degree(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         raise NotImplemented("yet.")
 
     def _iter_neighbors(self, node, dims):
-        """Overrides parents method.
-        """
+        """Overrides parents method."""
         raise NotImplemented("yet.")
 
 
@@ -1365,13 +1441,13 @@ class ModularityMultilayerNetworkView(MultilayerNetwork):
 try:
     import networkx
 
-
     class FlattenedMultilayerNetworkxView(networkx.Graph):
         pass
+
 except ImportError:
     pass
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from pymnet.tests.net_test import test_net
 
     test_net()

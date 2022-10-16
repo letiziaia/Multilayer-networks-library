@@ -2,7 +2,7 @@
 """
 from __future__ import print_function
 
-import random,math
+import random, math
 
 import pymnet
 from pymnet.net import MultiplexNetwork
@@ -12,44 +12,108 @@ from .layouts import get_layout
 from .drawassigners import *
 from .drawnet import *
 
-possible_backends=["mpl","threejs"]
-imported_backends=[]
-import_errors={}
+possible_backends = ["mpl", "threejs"]
+imported_backends = []
+import_errors = {}
 try:
     from .drawbackends.mpl import *
+
     imported_backends.append("mpl")
 except ImportError as e:
-    #print "Warning: cannot import matplotlib."
-    import_errors["mpl"]=e
+    # print "Warning: cannot import matplotlib."
+    import_errors["mpl"] = e
 
-from .drawbackends.threejs import NetFigureThreeJS,LayerThreeJS,NodeThreeJS,EdgeThreeJS
+from .drawbackends.threejs import (
+    NetFigureThreeJS,
+    LayerThreeJS,
+    NodeThreeJS,
+    EdgeThreeJS,
+)
+
 imported_backends.append("threejs")
 
 
-def draw(net,layout="spring",layershape="rectangle",azim=-51,elev=22,show=False,layergap=1.0,camera_dist=None,autoscale=True,backend="mpl",
-         figsize=None,nodeCoords={},nodelayerCoords={},
-         layerPadding=0.05,alignedNodes=True,ax=None,
-         layerColorDict={},layerColorRule={},defaultLayerColor="#29b7c1",
-         layerAlphaDict={},layerAlphaRule={},defaultLayerAlpha=0.75,
-         layerLabelDict={},layerLabelRule={"rule":"name"},defaultLayerLabel=None,
-         layerLabelLocDict={},layerLabelLocRule={},defaultLayerLabelLoc=(1,1),
-         layerLabelSizeDict={},layerLabelSizeRule={},defaultLayerLabelSize=None,
-         layerLabelColorDict={},layerLabelColorRule={},defaultLayerLabelColor='k',
-         layerLabelStyleDict={},layerLabelStyleRule={},defaultLayerLabelStyle="normal",
-         layerLabelAlphaDict={},layerLabelAlphaRule={},defaultLayerLabelAlpha=1.0,
-         layerOrderDict={},layerOrderRule={"rule":"name"},defaultLayerOrder=0,
-         nodeLabelDict={},nodeLabelRule={"rule":"nodename"},defaultNodeLabel=None,
-         nodeLabelSizeDict={},nodeLabelSizeRule={},defaultNodeLabelSize=None,
-         nodeLabelColorDict={},nodeLabelColorRule={},defaultNodeLabelColor='k',
-         nodeLabelStyleDict={},nodeLabelStyleRule={},defaultNodeLabelStyle="normal",
-         nodeLabelAlphaDict={},nodeLabelAlphaRule={},defaultNodeLabelAlpha=1.0,
-         nodeSizeDict={},nodeSizeRule={"rule":"scaled","scalecoeff":0.2},defaultNodeSize=None,
-         nodeColorDict={},nodeColorRule={},defaultNodeColor="black",
-         edgeColorDict={},edgeColorRule={},defaultEdgeColor="gray",
-         edgeWidthDict={},edgeWidthRule={},defaultEdgeWidth=1.5,
-         edgeAlphaDict={},edgeAlphaRule={},defaultEdgeAlpha=1,
-         edgeZDict={},edgeZRule={},defaultEdgeZ=0,
-         edgeStyleDict={},edgeStyleRule={"rule":"edgetype","intra":"-","inter":":"},defaultEdgeStyle="-"):
+def draw(
+    net,
+    layout="spring",
+    layershape="rectangle",
+    azim=-51,
+    elev=22,
+    show=False,
+    layergap=1.0,
+    camera_dist=None,
+    autoscale=True,
+    backend="mpl",
+    figsize=None,
+    nodeCoords={},
+    nodelayerCoords={},
+    layerPadding=0.05,
+    alignedNodes=True,
+    ax=None,
+    layerColorDict={},
+    layerColorRule={},
+    defaultLayerColor="#29b7c1",
+    layerAlphaDict={},
+    layerAlphaRule={},
+    defaultLayerAlpha=0.75,
+    layerLabelDict={},
+    layerLabelRule={"rule": "name"},
+    defaultLayerLabel=None,
+    layerLabelLocDict={},
+    layerLabelLocRule={},
+    defaultLayerLabelLoc=(1, 1),
+    layerLabelSizeDict={},
+    layerLabelSizeRule={},
+    defaultLayerLabelSize=None,
+    layerLabelColorDict={},
+    layerLabelColorRule={},
+    defaultLayerLabelColor="k",
+    layerLabelStyleDict={},
+    layerLabelStyleRule={},
+    defaultLayerLabelStyle="normal",
+    layerLabelAlphaDict={},
+    layerLabelAlphaRule={},
+    defaultLayerLabelAlpha=1.0,
+    layerOrderDict={},
+    layerOrderRule={"rule": "name"},
+    defaultLayerOrder=0,
+    nodeLabelDict={},
+    nodeLabelRule={"rule": "nodename"},
+    defaultNodeLabel=None,
+    nodeLabelSizeDict={},
+    nodeLabelSizeRule={},
+    defaultNodeLabelSize=None,
+    nodeLabelColorDict={},
+    nodeLabelColorRule={},
+    defaultNodeLabelColor="k",
+    nodeLabelStyleDict={},
+    nodeLabelStyleRule={},
+    defaultNodeLabelStyle="normal",
+    nodeLabelAlphaDict={},
+    nodeLabelAlphaRule={},
+    defaultNodeLabelAlpha=1.0,
+    nodeSizeDict={},
+    nodeSizeRule={"rule": "scaled", "scalecoeff": 0.2},
+    defaultNodeSize=None,
+    nodeColorDict={},
+    nodeColorRule={},
+    defaultNodeColor="black",
+    edgeColorDict={},
+    edgeColorRule={},
+    defaultEdgeColor="gray",
+    edgeWidthDict={},
+    edgeWidthRule={},
+    defaultEdgeWidth=1.5,
+    edgeAlphaDict={},
+    edgeAlphaRule={},
+    defaultEdgeAlpha=1,
+    edgeZDict={},
+    edgeZRule={},
+    defaultEdgeZ=0,
+    edgeStyleDict={},
+    edgeStyleRule={"rule": "edgetype", "intra": "-", "inter": ":"},
+    defaultEdgeStyle="-",
+):
     """Visualize a multilayer network.
 
     Creates a 3D pictures of multilayer networks are drawn using Matplotlib. The network can be any type of multilayer
@@ -60,7 +124,7 @@ def draw(net,layout="spring",layershape="rectangle",azim=-51,elev=22,show=False,
     net : MultilayerNetwork
        Network that is to be drawn
     layout : string
-       Layout algorithm. Use "fr" for Fruchterman-Reingold layout. 
+       Layout algorithm. Use "fr" for Fruchterman-Reingold layout.
        Options using networkx are "circular","shell","spring", or "spectral".
     layershape : string
        Shape of the layers. Options are "rectangle" or "circular".
@@ -156,73 +220,148 @@ def draw(net,layout="spring",layershape="rectangle",azim=-51,elev=22,show=False,
     - "propscale" : Multiply everytnig by a constant given as value and divide by the sqrt of the number of nodes in the net.
     """
 
-    assert net.aspects==1
+    assert net.aspects == 1
 
-    #Get coordinates
-    ncoords,nlcoords=get_layout(layout,net,alignedNodes=alignedNodes)
+    # Get coordinates
+    ncoords, nlcoords = get_layout(layout, net, alignedNodes=alignedNodes)
 
-    for node,coord in nodeCoords.items():
-         ncoords[node]=coord
-    for nl,coord in nodelayerCoords.items():
-         nlcoords[nl]=coord
+    for node, coord in nodeCoords.items():
+        ncoords[node] = coord
+    for nl, coord in nodelayerCoords.items():
+        nlcoords[nl] = coord
 
-    #Initialize assigners
-    layerColor=LayerColorAssigner(layerColorDict,layerColorRule,defaultLayerColor,net)
-    layerAlpha=LayerAlphaAssigner(layerAlphaDict,layerAlphaRule,defaultLayerAlpha,net)
-    layerLabel=LayerLabelAssigner(layerLabelDict,layerLabelRule,defaultLayerLabel,net)
-    layerLabelLoc=LayerLabelLocAssigner(layerLabelLocDict,layerLabelLocRule,defaultLayerLabelLoc,net)
-    layerLabelSize=LayerLabelSizeAssigner(layerLabelSizeDict,layerLabelSizeRule,defaultLayerLabelSize,net)
-    layerLabelColor=LayerLabelColorAssigner(layerLabelColorDict,layerLabelColorRule,defaultLayerLabelColor,net)
-    layerLabelStyle=LayerLabelStyleAssigner(layerLabelStyleDict,layerLabelStyleRule,defaultLayerLabelStyle,net)
-    layerLabelAlpha=LayerLabelAlphaAssigner(layerLabelAlphaDict,layerLabelAlphaRule,defaultLayerLabelAlpha,net)
-    layerOrder=LayerOrderAssigner(layerOrderDict,layerOrderRule,defaultLayerOrder,net)
-    nodeLabel=NodeLabelAssigner(nodeLabelDict,nodeLabelRule,defaultNodeLabel,net)
-    nodeLabelSize=NodeLabelSizeAssigner(nodeLabelSizeDict,nodeLabelSizeRule,defaultNodeLabelSize,net)
-    nodeLabelColor=NodeLabelColorAssigner(nodeLabelColorDict,nodeLabelColorRule,defaultNodeLabelColor,net)
-    nodeLabelStyle=NodeLabelStyleAssigner(nodeLabelStyleDict,nodeLabelStyleRule,defaultNodeLabelStyle,net)
-    nodeLabelAlpha=NodeLabelAlphaAssigner(nodeLabelAlphaDict,nodeLabelAlphaRule,defaultNodeLabelAlpha,net)
-    nodeSize=NodeSizeAssigner(nodeSizeDict,nodeSizeRule,defaultNodeSize,net)
-    nodeColor=NodeColorAssigner(nodeColorDict,nodeColorRule,defaultNodeColor,net)
-    edgeColor=EdgeColorAssigner(edgeColorDict,edgeColorRule,defaultEdgeColor,net)
-    edgeWidth=EdgeWidthAssigner(edgeWidthDict,edgeWidthRule,defaultEdgeWidth,net)
-    edgeStyle=EdgeStyleAssigner(edgeStyleDict,edgeStyleRule,defaultEdgeStyle,net)
-    edgeAlpha=EdgeAlphaAssigner(edgeAlphaDict,edgeAlphaRule,defaultEdgeAlpha,net)
-    edgeZ=EdgeZAssigner(edgeZDict,edgeZRule,defaultEdgeZ,net)
+    # Initialize assigners
+    layerColor = LayerColorAssigner(
+        layerColorDict, layerColorRule, defaultLayerColor, net
+    )
+    layerAlpha = LayerAlphaAssigner(
+        layerAlphaDict, layerAlphaRule, defaultLayerAlpha, net
+    )
+    layerLabel = LayerLabelAssigner(
+        layerLabelDict, layerLabelRule, defaultLayerLabel, net
+    )
+    layerLabelLoc = LayerLabelLocAssigner(
+        layerLabelLocDict, layerLabelLocRule, defaultLayerLabelLoc, net
+    )
+    layerLabelSize = LayerLabelSizeAssigner(
+        layerLabelSizeDict, layerLabelSizeRule, defaultLayerLabelSize, net
+    )
+    layerLabelColor = LayerLabelColorAssigner(
+        layerLabelColorDict, layerLabelColorRule, defaultLayerLabelColor, net
+    )
+    layerLabelStyle = LayerLabelStyleAssigner(
+        layerLabelStyleDict, layerLabelStyleRule, defaultLayerLabelStyle, net
+    )
+    layerLabelAlpha = LayerLabelAlphaAssigner(
+        layerLabelAlphaDict, layerLabelAlphaRule, defaultLayerLabelAlpha, net
+    )
+    layerOrder = LayerOrderAssigner(
+        layerOrderDict, layerOrderRule, defaultLayerOrder, net
+    )
+    nodeLabel = NodeLabelAssigner(nodeLabelDict, nodeLabelRule, defaultNodeLabel, net)
+    nodeLabelSize = NodeLabelSizeAssigner(
+        nodeLabelSizeDict, nodeLabelSizeRule, defaultNodeLabelSize, net
+    )
+    nodeLabelColor = NodeLabelColorAssigner(
+        nodeLabelColorDict, nodeLabelColorRule, defaultNodeLabelColor, net
+    )
+    nodeLabelStyle = NodeLabelStyleAssigner(
+        nodeLabelStyleDict, nodeLabelStyleRule, defaultNodeLabelStyle, net
+    )
+    nodeLabelAlpha = NodeLabelAlphaAssigner(
+        nodeLabelAlphaDict, nodeLabelAlphaRule, defaultNodeLabelAlpha, net
+    )
+    nodeSize = NodeSizeAssigner(nodeSizeDict, nodeSizeRule, defaultNodeSize, net)
+    nodeColor = NodeColorAssigner(nodeColorDict, nodeColorRule, defaultNodeColor, net)
+    edgeColor = EdgeColorAssigner(edgeColorDict, edgeColorRule, defaultEdgeColor, net)
+    edgeWidth = EdgeWidthAssigner(edgeWidthDict, edgeWidthRule, defaultEdgeWidth, net)
+    edgeStyle = EdgeStyleAssigner(edgeStyleDict, edgeStyleRule, defaultEdgeStyle, net)
+    edgeAlpha = EdgeAlphaAssigner(edgeAlphaDict, edgeAlphaRule, defaultEdgeAlpha, net)
+    edgeZ = EdgeZAssigner(edgeZDict, edgeZRule, defaultEdgeZ, net)
 
-
-    #Choose the backend for drawing
+    # Choose the backend for drawing
     if backend not in possible_backends:
-        raise Exception("Unknown backend: "+str(backend))
+        raise Exception("Unknown backend: " + str(backend))
     if backend not in imported_backends:
-        print("There was an error importing backend '"+str(backend)+"'.")
-        print("Please use one of the available backends: "+" ".join(imported_backends))
+        print("There was an error importing backend '" + str(backend) + "'.")
+        print(
+            "Please use one of the available backends: " + " ".join(imported_backends)
+        )
         print("The following error was raised:")
         raise import_errors[backend]
-    if backend=="mpl":
-        NetFigureBE,LayerBE,NodeBE,EdgeBE=NetFigureMPL,LayerMPL,NodeMPL,EdgeMPL
-    elif backend=="threejs":
-        NetFigureBE,LayerBE,NodeBE,EdgeBE=NetFigureThreeJS,LayerThreeJS,NodeThreeJS,EdgeThreeJS
+    if backend == "mpl":
+        NetFigureBE, LayerBE, NodeBE, EdgeBE = NetFigureMPL, LayerMPL, NodeMPL, EdgeMPL
+    elif backend == "threejs":
+        NetFigureBE, LayerBE, NodeBE, EdgeBE = (
+            NetFigureThreeJS,
+            LayerThreeJS,
+            NodeThreeJS,
+            EdgeThreeJS,
+        )
 
-    #Build the network
-    layers={}
-    nodes={}
-    nf=NetFigureBE(figsize=figsize,layergap=layergap,padding=layerPadding,azim=azim,elev=elev,show=show,camera_dist=camera_dist,autoscale=autoscale)
-    for layer in sorted(net.iter_layers(),key=lambda l:layerOrder[l]):
-        layerLabelArgs={"size":layerLabelSize[layer],"color":layerLabelColor[layer],"style":layerLabelStyle[layer],"alpha":layerLabelAlpha[layer]}
-        layers[layer]=LayerBE(nf,shape=layershape,color=layerColor[layer],label=layerLabel[layer],alpha=layerAlpha[layer],labelloc=layerLabelLoc[layer],labelArgs=layerLabelArgs)
+    # Build the network
+    layers = {}
+    nodes = {}
+    nf = NetFigureBE(
+        figsize=figsize,
+        layergap=layergap,
+        padding=layerPadding,
+        azim=azim,
+        elev=elev,
+        show=show,
+        camera_dist=camera_dist,
+        autoscale=autoscale,
+    )
+    for layer in sorted(net.iter_layers(), key=lambda l: layerOrder[l]):
+        layerLabelArgs = {
+            "size": layerLabelSize[layer],
+            "color": layerLabelColor[layer],
+            "style": layerLabelStyle[layer],
+            "alpha": layerLabelAlpha[layer],
+        }
+        layers[layer] = LayerBE(
+            nf,
+            shape=layershape,
+            color=layerColor[layer],
+            label=layerLabel[layer],
+            alpha=layerAlpha[layer],
+            labelloc=layerLabelLoc[layer],
+            labelArgs=layerLabelArgs,
+        )
 
     for nl in net.iter_node_layers():
         if nl in nlcoords:
-            xy=nlcoords[nl]
+            xy = nlcoords[nl]
         elif nl[0] in ncoords:
-            xy=ncoords[nl[0]]
+            xy = ncoords[nl[0]]
         else:
-            xy=(random.random(),random.random())
-        nodeLabelArgs={"size":nodeLabelSize[nl],"color":nodeLabelColor[nl],"style":nodeLabelStyle[nl],"alpha":nodeLabelAlpha[nl]}
-        nodes[nl]=NodeBE(layers[nl[1]],xy[0],xy[1],label=nodeLabel[nl],color=nodeColor[nl],size=nodeSize[nl],labelArgs=nodeLabelArgs)
+            xy = (random.random(), random.random())
+        nodeLabelArgs = {
+            "size": nodeLabelSize[nl],
+            "color": nodeLabelColor[nl],
+            "style": nodeLabelStyle[nl],
+            "alpha": nodeLabelAlpha[nl],
+        }
+        nodes[nl] = NodeBE(
+            layers[nl[1]],
+            xy[0],
+            xy[1],
+            label=nodeLabel[nl],
+            color=nodeColor[nl],
+            size=nodeSize[nl],
+            labelArgs=nodeLabelArgs,
+        )
 
     for nl1 in net.iter_node_layers():
         for nl2 in net[nl1]:
-            EdgeBE(nodes[nl1],nodes[nl2],color=edgeColor[(nl1,nl2)],width=edgeWidth[(nl1,nl2)],style=edgeStyle[(nl1,nl2)],z=edgeZ[(nl1,nl2)],alpha=edgeAlpha[(nl1,nl2)])
+            EdgeBE(
+                nodes[nl1],
+                nodes[nl2],
+                color=edgeColor[(nl1, nl2)],
+                width=edgeWidth[(nl1, nl2)],
+                style=edgeStyle[(nl1, nl2)],
+                z=edgeZ[(nl1, nl2)],
+                alpha=edgeAlpha[(nl1, nl2)],
+            )
 
     return nf.draw(ax=ax)
