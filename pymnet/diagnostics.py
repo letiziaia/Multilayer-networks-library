@@ -1,5 +1,6 @@
 from pymnet.net import MultilayerNetwork, MultiplexNetwork
-import heapq, itertools
+import heapq
+import itertools
 
 
 def degs(net, degstype="distribution"):
@@ -167,7 +168,7 @@ def dijkstra_mlayer_prune(net, sources, aaspects):
         layers = []
         for a in range(net.aspects + 1):
             if a in aaspects:
-                assert s[a] == None
+                assert s[a] is None
                 layers.append(list(net.slices[a]))
             else:
                 layers.append([s[a]])

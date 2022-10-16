@@ -238,7 +238,7 @@ def sample_multilayer_subgraphs_esu(
     ----------
     [1] "A Faster Algorithm for Detecting Network Motifs", S. Wernicke, WABI. Vol. 3692, pp. 165-177. Springer 2005.
     """
-    if copy_network == True:
+    if copy_network:
         network_copy = pymnet.subnet(
             network,
             network.get_layers(aspect=0),
@@ -248,34 +248,34 @@ def sample_multilayer_subgraphs_esu(
     else:
         network_copy = network
 
-    if seed == None:
+    if seed is None:
         random.seed()
     else:
         random.seed(seed)
 
     check_function = None
-    assert (sizes != None and intersections != None) or (
-        nnodes != None and nlayers != None
+    assert (sizes is not None and intersections is not None) or (
+        nnodes is not None and nlayers is not None
     ), "Please provide either sizes and intersections or nnodes and nlayers"
-    if custom_check_function != None:
+    if custom_check_function is not None:
         assert (
-            nnodes != None and nlayers != None
+            nnodes is not None and nlayers is not None
         ), "Please provide nnodes and nlayers when using a custom check function"
         req_nodelist_len = nnodes
         req_layerlist_len = nlayers
         check_function = custom_check_function
-    if sizes != None and intersections != None and check_function == None:
+    if sizes is not None and intersections is not None and check_function is None:
         if isinstance(intersections, list):
             if None in intersections:
                 assert (
-                    nnodes != None
+                    nnodes is not None
                 ), "Please provide nnodes if including Nones in intersections"
                 req_nodelist_len = nnodes
                 req_layerlist_len = len(sizes)
             else:
                 if intersection_type == "strict":
                     assert (
-                        nnodes == None and nlayers == None
+                        nnodes is None and nlayers is None
                     ), "You cannot provide both sizes and intersections and nnodes and nlayers, if intersections is a list"
                     (
                         req_nodelist_len,
@@ -283,7 +283,7 @@ def sample_multilayer_subgraphs_esu(
                     ) = default_calculate_required_lengths(sizes, intersections)
                 elif intersection_type == "less_or_equal":
                     assert (
-                        nnodes != None and nlayers == None
+                        nnodes is not None and nlayers is None
                     ), "please provide nnodes (and not nlayers) if using less_or_equal intersection type"
                     req_nodelist_len = nnodes
                     req_layerlist_len = len(sizes)
@@ -302,7 +302,7 @@ def sample_multilayer_subgraphs_esu(
                 intersections >= 0
             ), "Please provide nonnegative common intersection size"
             assert (
-                nnodes != None and nlayers == None
+                nnodes is not None and nlayers is None
             ), "When requiring only common intersection size, please provide nnodes (and not nlayers)"
             req_nodelist_len = nnodes
             req_layerlist_len = len(sizes)
@@ -318,9 +318,9 @@ def sample_multilayer_subgraphs_esu(
                 req_layerlist_len,
                 intersection_type,
             )
-    if nnodes != None and nlayers != None and check_function == None:
+    if nnodes is not None and nlayers is not None and check_function is None:
         assert (
-            sizes == None and intersections == None
+            sizes is None and intersections is None
         ), "You cannot provide both sizes and intersections and nnodes and nlayers, if intersections is a list"
         req_nodelist_len = nnodes
         req_layerlist_len = nlayers
@@ -332,10 +332,10 @@ def sample_multilayer_subgraphs_esu(
         ), "Nonpositive nnodes or nlayers"
         check_function = relaxed_check_reqs
     assert (
-        check_function != None
+        check_function is not None
     ), "Please specify a valid combination of parameters to determine method of subgraph validity checking"
 
-    if p == None:
+    if p is None:
         p = [1] * (req_nodelist_len - 1 + req_layerlist_len - 1 + 1)
 
     depth = 0
@@ -394,7 +394,7 @@ def sample_multilayer_subgraphs_esu(
                 p,
                 results,
             )
-        if copy_network == True:
+        if copy_network:
             for neighbor in list(network_copy[v]):
                 network_copy[neighbor][v] = 0
 
@@ -465,13 +465,13 @@ def _extend_subgraph(
             layer_added = V_extension_layers.pop()
             new_layerlist.append(layer_added)
         if random.random() < p[depth]:
-            if node_added != None:
+            if node_added is not None:
                 added_graph = [
                     nl
                     for nl in itertools.product([node_added], new_layerlist)
                     if nl in numberings
                 ]
-            elif layer_added != None:
+            elif layer_added is not None:
                 added_graph = [
                     nl
                     for nl in itertools.product(new_nodelist, [layer_added])

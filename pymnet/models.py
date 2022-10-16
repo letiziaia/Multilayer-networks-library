@@ -9,7 +9,8 @@ except NameError:
 ######
 
 from pymnet.net import MultilayerNetwork, MultiplexNetwork
-import math, random
+import math
+import random
 
 
 def single_layer_conf(net, degs, degstype="distribution"):
@@ -187,14 +188,14 @@ def single_layer_er(net, nodes, p=None, edges=None):
     Efficient generation of large random networks. PRE 71, 036113 (2005)
     """
 
-    if (p == None and edges == None) or (p != None and edges != None):
+    if (p is None and edges is None) or (p is not None and edges is not None):
         raise Exception("Give one of the parameters: p or edges.")
 
     n = len(nodes)
     for node in nodes:
         net.add_node(node)
 
-    if p != None:
+    if p is not None:
         if p == 1.0:
             for node1 in nodes:
                 for node2 in nodes:
@@ -284,13 +285,13 @@ def conf(degs, degstype="distribution", couplings=("categorical", 1.0)):
         if degstype == "distribution":
             for ldegs in degslist:
                 lnnodes = sum(ldegs.values())
-                if nnodes != None and lnnodes != nnodes:
+                if nnodes is not None and lnnodes != nnodes:
                     nodeAligned = False
                 nnodes = lnnodes
         elif degstype == "nodes":
             for ldegs in degslist:
                 lnnodes = set(ldegs.keys())
-                if nnodes != None and lnnodes != nnodes:
+                if nnodes is not None and lnnodes != nnodes:
                     nodeAligned = False
                 nnodes = lnnodes
         else:
@@ -336,7 +337,7 @@ def er(n, p=None, edges=None):
     monoplex = (not hasattr(p, "__iter__")) and (not hasattr(edges, "__iter__")) and fic
 
     # Sanity check for parameters
-    if (p == None and edges == None) or (p != None and edges != None):
+    if (p is None and edges is None) or (p is not None and edges is not None):
         raise Exception("Give one of the parameters: p or edges.")
     if not fic:
         if hasattr(p, "__iter__"):
@@ -352,7 +353,7 @@ def er(n, p=None, edges=None):
             couplings=[("categorical", 1.0)], fullyInterconnected=fic
         )
         if not hasattr(n, "__iter__"):
-            if p != None:
+            if p is not None:
                 nodes = list(map(lambda x: xrange(n), p))
                 layers = xrange(len(p))
             else:
@@ -361,13 +362,13 @@ def er(n, p=None, edges=None):
         else:
             nodes = n
             layers = xrange(len(n))
-            if p != None and (not hasattr(p, "__iter__")):
+            if p is not None and (not hasattr(p, "__iter__")):
                 p = list(map(lambda x: p, layers))
-            if edges != None and (not hasattr(edges, "__iter__")):
+            if edges is not None and (not hasattr(edges, "__iter__")):
                 edges = list(map(lambda x: edges, layers))
 
     # Fill in the edges
-    if p != None:
+    if p is not None:
         if monoplex:
             single_layer_er(net, range(n), p=p)
         else:
@@ -435,7 +436,7 @@ def full(nodes, layers, couplings=("categorical", 1.0)):
        The multiplex network that is produced, or the monoplex
        network (which is of type MultilayerNetwork).
     """
-    if layers == None:
+    if layers is None:
         n = MultilayerNetwork(aspects=0)
         for node1 in range(nodes):
             for node2 in range(nodes):

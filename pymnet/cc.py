@@ -347,12 +347,12 @@ def elementary_cycles(net, node=None, layer=None, anet=None):
     "Clustering Coefficients in Multiplex Networks", E. Cozzo et al. , arXiv:1307.6780 [physics.soc-ph]
 
     """
-    if node != None and layer != None:
+    if node is not None and layer is not None:
         return cc_cycle_vector_bf(net, node, layer)
     sums = [0 for i in range(10)]
-    nodes = list(net) if node == None else [node]
-    if net.fullyInterconnected and (anet != None or node == None):
-        if anet == None:
+    nodes = list(net) if node is None else [node]
+    if net.fullyInterconnected and (anet is not None or node is None):
+        if anet is None:
             anet = transforms.aggregate(net, 1)
         for n in nodes:
             sums = map(
@@ -361,7 +361,7 @@ def elementary_cycles(net, node=None, layer=None, anet=None):
                 cc_cycle_vector_anet(net, n, layer=layer, anet=anet),
             )
     else:
-        layers = net.iter_layers() if layer == None else [layer]
+        layers = net.iter_layers() if layer is None else [layer]
         for l in layers:
             for n in nodes:
                 sums = map(lambda x, y: x + y, sums, cc_cycle_vector_bf(net, n, l))
@@ -519,7 +519,7 @@ def cc_cycle_vector_anet(net, node, layer=None, anet=None, undefReturn=0.0):
     acaca = 0
     acacac = 0
 
-    if layer != None:
+    if layer is not None:
         intranet = net.A[layer]
         degree = intranet[node].deg()
         other_layers = map(lambda x: x[1], net[node, node, layer, :])
@@ -865,7 +865,7 @@ def lcc_aw(
     if returnCVector:
         return c1, c2, c3
 
-    if w3 != None:
+    if w3 is not None:
         return w1 * c1 + w2 * c2 + w3 * c3
     else:
         a, b = w1, w2
@@ -1003,7 +1003,7 @@ def sncc_aw(
     if returnCVector:
         return c1, c2, c3
 
-    if w3 != None:
+    if w3 is not None:
         return w1 * c1 + w2 * c2 + w3 * c3
     else:
         a, b = w1, w2
@@ -1121,7 +1121,7 @@ def gcc_aw(net, w1=1.0 / 2.0, w2=1.0 / 2.0, w3=None, returnCVector=False):
     if returnCVector:
         return c1, c2, c3
 
-    if w3 != None:
+    if w3 is not None:
         return w1 * c1 + w2 * c2 + w3 * c3
     else:
         a, b = w1, w2
@@ -1158,7 +1158,7 @@ def gcc_moreno2_seplayers(net, w1=1.0 / 3.0, w2=1.0 / 3.0, w3=1.0 / 3.0):
             d3 += 2 * acfcac
             # print node,layer,aaa,aacac,acaac,acaca,acacac, afa,afcac,acfac,acfca,acfcac
 
-    if w3 != None:
+    if w3 is not None:
         if d3 != 0:
             c3 = t3 / float(d3)
         else:
@@ -1233,7 +1233,7 @@ def sncc_aw_seplayers(
 
 def gcc_from_lcc(net, lcc):
     lcc_vector = map(lambda node: lcc(net, node, undefReturn=None), net)
-    lcc_fvector = filter(lambda x: x != None, lcc_vector)
+    lcc_fvector = filter(lambda x: x is not None, lcc_vector)
     if len(lcc_fvector) > 0:
         return sum(lcc_fvector) / len(lcc_fvector)
     else:
@@ -1602,7 +1602,7 @@ def lcc_brodka(net, node, anet=None, threshold=1, undefReturn=0.0):
         threshold = len(net.get_layers())
 
     thneighborhood = []
-    if anet == None or net.directed:
+    if anet is None or net.directed:
         neighborcount = {}
         for layer in net.get_layers():
             for neigh in net.A[layer][node].iter_total():
@@ -1622,7 +1622,7 @@ def lcc_brodka(net, node, anet=None, threshold=1, undefReturn=0.0):
         return 0.0
 
     s = 0
-    if anet == None:
+    if anet is None:
         for layer in net.get_layers():
             for v in thneighborhood:
                 for h in thneighborhood:
@@ -1834,7 +1834,7 @@ def lcc_criado(net, node, undefReturn=0.0, anet=None):
     """
     s, d = 0, 0
 
-    if anet == None:
+    if anet is None:
         nu = set()
         for alpha in net.get_layers():
             for neigh in net.A[alpha][node]:

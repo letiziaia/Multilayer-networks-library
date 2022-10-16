@@ -386,7 +386,7 @@ def find_equations(orbit, eq, set_eqs):
 
     for orbit_eq in set_eqs[eq]:
         key = find_key(orbit, orbit_eq, set_eqs)
-        if key != None:
+        if key is not None:
             eqs.add(key)
         else:
             eqs = set()
@@ -574,7 +574,7 @@ def explore(v, net, visited, post):
     visited_c.add(v)
     if len(net[v]) > 0:
         for u in net[v]:
-            if not u in visited_c:
+            if u not in visited_c:
                 visited_c, post = explore(u, net, visited_c, post)
 
     post.append(v)
@@ -587,7 +587,7 @@ def DFS(net):
     visited = set()
     post = []
     for v in net:
-        if not v in visited:
+        if v not in visited:
             visited, post = explore(v, net, visited, post)
 
     return post

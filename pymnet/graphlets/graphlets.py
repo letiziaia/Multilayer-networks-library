@@ -30,7 +30,7 @@ def graphlets(n, layers, n_l=None, couplings=None, allowed_aspects="all"):
     invariants : dict (key: str(complete invariant), value: tuple(index in 'nets': n_nodes, index in the list of multiplex networks))
         complete invariants of the graphlets, the values can be used to match the graphlets in 'nets'
     """
-    if n_l == None:
+    if n_l is None:
         n_l = len(layers)
 
     nets = {}
@@ -49,7 +49,7 @@ def graphlets(n, layers, n_l=None, couplings=None, allowed_aspects="all"):
 
             ci = pymnet.get_complete_invariant(net, allowed_aspects=allowed_aspects)
             ci_s = str(ci)
-            if not ci_s in invariants:
+            if ci_s not in invariants:
                 invariants[ci_s] = (2, len(nets2))
                 nets2.append(net)
 
@@ -80,7 +80,7 @@ def graphlets(n, layers, n_l=None, couplings=None, allowed_aspects="all"):
                             new_net, allowed_aspects=allowed_aspects
                         )
                         ci_s = str(ci)
-                        if not ci_s in invariants:
+                        if ci_s not in invariants:
                             invariants[ci_s] = (i + 1, len(nets_i_1))
                             nets_i_1.append(new_net)
 
@@ -217,7 +217,7 @@ def orbit_equations(n, nets, auts, invs, allowed_aspects="all"):
                         comb_nets = combine_orbits(
                             orbit, orbit2, nets, allowed_aspects=allowed_aspects
                         )
-                        if comb_nets == None:
+                        if comb_nets is None:
                             continue
 
                         for k in range(len(comb_nets)):
@@ -267,7 +267,7 @@ def orbit_equations(n, nets, auts, invs, allowed_aspects="all"):
                                 iso_net[1],
                                 auts[iso_net[0], iso_net[1], node_o],
                             )
-                            if not new_orbit in new_orbits:
+                            if new_orbit not in new_orbits:
                                 new_orbits.add(new_orbit)
                                 new_nets[new_orbit] = comb_net
 
@@ -374,7 +374,7 @@ def list_orbits(auts):
         n_nodes = key[0]
         net_i = key[1]
         orbit = auts[key]
-        if not n_nodes in orbit_lists:
+        if n_nodes not in orbit_lists:
             orbit_lists[n_nodes] = []
         if not (n_nodes, net_i, orbit) in orbit_lists[n_nodes]:
             orbit_lists[n_nodes].append((n_nodes, net_i, orbit))
@@ -454,7 +454,7 @@ def combine_orbits(orbit1, orbit2, nets, allowed_aspects="all"):
             ci = str(
                 pymnet.get_complete_invariant(new_net, allowed_aspects=allowed_aspects)
             )
-            if not ci in new_invs:
+            if ci not in new_invs:
                 new_nets.append(new_net)
                 new_invs.add(ci)
 
@@ -533,7 +533,7 @@ def merge_nodes(both_orbit_nodes, net, allowed_aspects="all"):
         ci = str(
             pymnet.get_complete_invariant(new_net, allowed_aspects=allowed_aspects)
         )
-        if not ci in new_invs:
+        if ci not in new_invs:
             new_nets.append(new_net)
             new_nets_and_nodes.append((new_net, both_orbit_nodes + [node1]))
             new_invs.add(ci)
@@ -720,7 +720,7 @@ def coefficient_help(
         ci_sub2 = str(
             pymnet.get_complete_invariant(sub2, allowed_aspects=allowed_aspects)
         )
-        if not ci_sub1 in invs or not ci_sub2 in invs:
+        if ci_sub1 not in invs or ci_sub2 not in invs:
             continue
         if invs[ci_sub1] == (orbit1[0], orbit1[1]) and invs[ci_sub2] == (
             orbit2[0],

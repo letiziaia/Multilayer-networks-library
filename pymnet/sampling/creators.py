@@ -21,7 +21,7 @@ def er_multilayer_partially_interconnected(nodes_by_layer, p, seed=None):
     -------
     The generated network.
     """
-    if seed == None:
+    if seed is None:
         random.seed()
     else:
         random.seed(seed)
@@ -59,7 +59,7 @@ def random_nodelists(poolsize, nodes_per_layer, layers, seed=None):
     ------
     A list of a sample of nodes_per_layer nodes without replacement, times layers.
     """
-    if seed == None:
+    if seed is None:
         random.seed()
     else:
         random.seed(seed)

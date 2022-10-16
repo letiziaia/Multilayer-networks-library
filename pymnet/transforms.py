@@ -60,7 +60,7 @@ def aggregate(net, aspects, newNet=None, selfEdges=False):
     except TypeError:
         pass
 
-    if newNet == None:
+    if newNet is None:
         newNet = netmodule.MultilayerNetwork(
             aspects=net.aspects - len(aspects),
             noEdge=net.noEdge,
@@ -164,12 +164,12 @@ def subnet(net, nodes, *layers, **kwargs):
     assert len(layers) == net.aspects, "Please give layers for each aspect."
     nodelayers = []
     for a, elayers in enumerate(itertools.chain([nodes], layers)):
-        if elayers == None:
+        if elayers is None:
             nodelayers.append(set(net.get_layers(a)))
         else:
             nodelayers.append(set(elayers))
 
-    if newNet == None:
+    if newNet is None:
         if isinstance(net, netmodule.MultiplexNetwork):
             newNet = netmodule.MultiplexNetwork(
                 couplings=net.couplings,
@@ -320,10 +320,10 @@ def relabel(net, nodeNames=None, layerNames=None):
     def layer_to_indexlayer(layer, layerNames):
         return tuple([dget(layerNames[i], elayer) for i, elayer in enumerate(layer)])
 
-    if nodeNames == None:
+    if nodeNames is None:
         nodeNames = {}
 
-    if layerNames == None:
+    if layerNames is None:
         layerNames = []
 
     if net.aspects == 1:
@@ -434,7 +434,7 @@ def normalize(
 
     newNet = relabel(net, nodeNames=nodeNames, layerNames=layerNames)
 
-    if nodesToIndices == False:
+    if not nodesToIndices:
         indicesToNodes = {}
         # for node,index in nodeNames.iteritems():
         for node in nodeNames:
@@ -442,7 +442,7 @@ def normalize(
             indicesToNodes[index] = node
         nodeNames = indicesToNodes
 
-    if layersToIndices == False:
+    if not layersToIndices:
         for aspect in range(net.aspects):
             indicesToLayers = {}
             # for layer,index in layerNames[aspect].iteritems():
@@ -454,13 +454,13 @@ def normalize(
     if net.aspects == 1:
         layerNames = layerNames[0]
 
-    if nodesToIndices == None and layersToIndices == None:
+    if nodesToIndices is None and layersToIndices is None:
         return newNet
-    elif nodesToIndices != None and layersToIndices == None:
+    elif nodesToIndices is not None and layersToIndices is None:
         return newNet, nodeNames
-    elif nodesToIndices == None and layersToIndices != None:
+    elif nodesToIndices is None and layersToIndices is not None:
         return newNet, layerNames
-    elif nodesToIndices != None and layersToIndices != None:
+    elif nodesToIndices is not None and layersToIndices is not None:
         return newNet, nodeNames, layerNames
 
 

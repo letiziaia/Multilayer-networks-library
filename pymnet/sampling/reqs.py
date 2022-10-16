@@ -176,7 +176,7 @@ def default_check_reqs(
     returns False, since the induced subgraph is not connected.
     """
     if intersection_type == "strict":
-        if nnodes != None and nlayers != None:
+        if nnodes is not None and nlayers is not None:
             req_nodelist_len = nnodes
             req_layerlist_len = nlayers
         else:
@@ -194,9 +194,9 @@ def default_check_reqs(
 
     elif intersection_type == "less_or_equal":
         assert (
-            nnodes != None
+            nnodes is not None
         ), "Please provide nnodes when using less_or_equal intersection type"
-        if nlayers != None:
+        if nlayers is not None:
             req_nodelist_len = nnodes
             req_layerlist_len = nlayers
         else:
@@ -289,14 +289,14 @@ def default_check_reqs(
                         rolelist.sort()
                         if intersection_type == "strict":
                             if (
-                                d_isect[tuple(rolelist)] != None
+                                d_isect[tuple(rolelist)] is not None
                                 and len(nodeset) != d_isect[tuple(rolelist)]
                             ):
                                 goto_next_perm = True
                                 break
                         elif intersection_type == "less_or_equal":
                             if (
-                                d_isect[tuple(rolelist)] != None
+                                d_isect[tuple(rolelist)] is not None
                                 and len(nodeset) > d_isect[tuple(rolelist)]
                             ):
                                 goto_next_perm = True

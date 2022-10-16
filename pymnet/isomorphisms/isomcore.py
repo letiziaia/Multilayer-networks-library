@@ -11,7 +11,7 @@ class AuxiliaryGraphBuilder(object):
     )
 
     def __init__(self, net, allowed_aspects="all", reduction_type="auto"):
-        assert net.directed == False, "Only undirected networks for now."
+        assert not net.directed, "Only undirected networks for now."
         self.net = net
 
         if allowed_aspects == "all":

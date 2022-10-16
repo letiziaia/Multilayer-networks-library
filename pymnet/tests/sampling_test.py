@@ -3070,11 +3070,11 @@ class TestSampling(unittest.TestCase):
         indicate that something is wrong with the algorithm.
         PyPy recommended for speed.
         """
-        if network == None:
+        if network is None:
             network = creators.er_multilayer_partially_interconnected(
                 creators.random_nodelists(100, 30, 10, seed=1), 0.05, seed=1
             )
-        if p == None:
+        if p is None:
             (
                 req_nodelist_len,
                 req_layerlist_len,
@@ -3082,7 +3082,7 @@ class TestSampling(unittest.TestCase):
                 sizes=motif[0], intersections=motif[1]
             )
             p = [0.5] * (req_nodelist_len - 1 + req_layerlist_len - 1 + 1)
-        if all_subgraphs == None:
+        if all_subgraphs is None:
             all_subgraphs = []
             esu.sample_multilayer_subgraphs_esu(
                 network, all_subgraphs, sizes=motif[0], intersections=motif[1]

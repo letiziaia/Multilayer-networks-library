@@ -38,28 +38,28 @@ def dumb_enumeration(
     relaxed_check_reqs, this has been taken into account and you don't have to worry about it.
     """
     check_function = None
-    assert (sizes != None and intersections != None) or (
-        nnodes != None and nlayers != None
+    assert (sizes is not None and intersections is not None) or (
+        nnodes is not None and nlayers is not None
     ), "Please provide either sizes and intersections or nnodes and nlayers"
-    if custom_check_function != None:
+    if custom_check_function is not None:
         assert (
-            nnodes != None and nlayers != None
+            nnodes is not None and nlayers is not None
         ), "Please provide nnodes and nlayers when using a custom check function"
         req_nodelist_len = nnodes
         req_layerlist_len = nlayers
         check_function = custom_check_function
-    if sizes != None and intersections != None and check_function == None:
+    if sizes is not None and intersections is not None and check_function is None:
         if isinstance(intersections, list):
             if None in intersections:
                 assert (
-                    nnodes != None
+                    nnodes is not None
                 ), "Please provide nnodes if including Nones in intersections"
                 req_nodelist_len = nnodes
                 req_layerlist_len = len(sizes)
             else:
                 if intersection_type == "strict":
                     assert (
-                        nnodes == None and nlayers == None
+                        nnodes is None and nlayers is None
                     ), "You cannot provide both sizes and intersections and nnodes and nlayers, if intersections is a list"
                     (
                         req_nodelist_len,
@@ -67,7 +67,7 @@ def dumb_enumeration(
                     ) = default_calculate_required_lengths(sizes, intersections)
                 elif intersection_type == "less_or_equal":
                     assert (
-                        nnodes != None and nlayers == None
+                        nnodes is not None and nlayers is None
                     ), "please provide nnodes (and not nlayers) if using less_or_equal intersection type"
                     req_nodelist_len = nnodes
                     req_layerlist_len = len(sizes)
@@ -86,7 +86,7 @@ def dumb_enumeration(
                 intersections >= 0
             ), "Please provide nonnegative common intersection size"
             assert (
-                nnodes != None and nlayers == None
+                nnodes is not None and nlayers is None
             ), "When requiring only common intersection size, please provide nnodes (and not nlayers)"
             req_nodelist_len = nnodes
             req_layerlist_len = len(sizes)
@@ -102,9 +102,9 @@ def dumb_enumeration(
                 req_layerlist_len,
                 intersection_type,
             )
-    if nnodes != None and nlayers != None and check_function == None:
+    if nnodes is not None and nlayers is not None and check_function is None:
         assert (
-            sizes == None and intersections == None
+            sizes is None and intersections is None
         ), "You cannot provide both sizes and intersections and nnodes and nlayers, if intersections is a list"
         req_nodelist_len = nnodes
         req_layerlist_len = nlayers
@@ -116,7 +116,7 @@ def dumb_enumeration(
         ), "Nonpositive nnodes or nlayers"
         check_function = relaxed_check_reqs
     assert (
-        check_function != None
+        check_function is not None
     ), "Please specify a valid combination of parameters to determine method of subgraph validity checking"
 
     for nodelist in list(

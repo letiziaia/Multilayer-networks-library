@@ -2,7 +2,9 @@
 """
 from __future__ import absolute_import
 
-import math, itertools, pickle
+import math
+import itertools
+import pickle
 import pymnet.transforms as transforms
 
 # Pre 3.10
@@ -211,7 +213,7 @@ class MultilayerNetwork(object):
             layer = tuple(layer)
 
         self.slices[0].add(node)
-        if layer != None and not self.fullyInterconnected:
+        if layer is not None and not self.fullyInterconnected:
             # check that the layer exists, if not add it.
             if layer.__class__ == tuple:  # two or more aspects
                 assert self.aspects >= 2, layer
@@ -295,11 +297,11 @@ class MultilayerNetwork(object):
                         del self._net[node2][node1]
                     del self._net[node1][node2]
         else:
-            if not node1 in self._net:
+            if node1 not in self._net:
                 self._net[node1] = {}
                 if self.directed:
                     self._rnet[node1] = {}
-            if not node2 in self._net:
+            if node2 not in self._net:
                 self._net[node2] = {}
                 if self.directed:
                     self._rnet[node2] = {}
@@ -342,7 +344,7 @@ class MultilayerNetwork(object):
         """
         # TODO: lookuptables for intradimensional degrees
 
-        if dims == None:
+        if dims is None:
             if node in self._net:
                 return len(self._net[node])
             else:
@@ -353,7 +355,7 @@ class MultilayerNetwork(object):
     def _get_degree_total_dir(self, node, dims=None):
         """Returns the total degree of a _directed_ multilayer network."""
         assert self.directed
-        if dims == None:
+        if dims is None:
             return self._totalDegree.get(node, 0)
         else:
             return len(list(self._iter_neighbors_total(node, dims)))
@@ -361,7 +363,7 @@ class MultilayerNetwork(object):
     def _get_degree_in_dir(self, node, dims=None):
         """Returns the in-degree of a _directed_ multilayer network."""
         assert self.directed
-        if dims == None:
+        if dims is None:
             if node in self._rnet:
                 return len(self._rnet[node])
             else:
@@ -441,14 +443,14 @@ class MultilayerNetwork(object):
 
         """
         if node in self._net:
-            if dims == None:
+            if dims is None:
                 for neigh in self._net[node]:
                     yield neigh
             else:
                 for neigh in self._net[node]:
                     if all(
                         map(
-                            lambda i: dims[i] == None or neigh[i] == dims[i],
+                            lambda i: dims[i] is None or neigh[i] == dims[i],
                             range(len(dims)),
                         )
                     ):
@@ -457,14 +459,14 @@ class MultilayerNetwork(object):
     def _iter_neighbors_in_dir(self, node, dims=None):
         """Iterate over out-neighbors of a node in a directed network."""
         if node in self._rnet:
-            if dims == None:
+            if dims is None:
                 for neigh in self._rnet[node]:
                     yield neigh
             else:
                 for neigh in self._rnet[node]:
                     if all(
                         map(
-                            lambda i: dims[i] == None or neigh[i] == dims[i],
+                            lambda i: dims[i] is None or neigh[i] == dims[i],
                             range(len(dims)),
                         )
                     ):
@@ -587,7 +589,7 @@ class MultilayerNetwork(object):
 
         If a layer is given then returns nodes in that layer.
         """
-        if self.fullyInterconnected or layer == None:
+        if self.fullyInterconnected or layer is None:
             for node in self.slices[0]:
                 yield node
         else:
@@ -624,7 +626,7 @@ class MultilayerNetwork(object):
         over. If aspect is specified and there are more than a single aspect, then elementary
         layers are iterated instead.
         """
-        if aspect != None:
+        if aspect is not None:
             assert isinstance(aspect, int)
             assert 1 <= aspect <= self.aspects
             for l in self.slices[aspect]:
@@ -987,7 +989,7 @@ class MultiplexNetwork(MultilayerNetwork):
             or isinstance(couplings, "".__class__)
             or isinstance(couplings, "".__class__)
             or isinstance(couplings, MultilayerNetwork)
-            or couplings == None
+            or couplings is None
         ):
             couplings = [couplings]
 
@@ -1007,7 +1009,7 @@ class MultiplexNetwork(MultilayerNetwork):
                 ):
                     assert str(coupling) in coupling_types
                     self.couplings.append((coupling, 1.0))
-                elif coupling == None:
+                elif coupling is None:
                     self.couplings.append(("none",))
                 else:
                     raise ValueError("Invalid coupling type: " + str(type(coupling)))
@@ -1221,15 +1223,15 @@ class MultiplexNetwork(MultilayerNetwork):
             raise NotImplemented()
 
     def _select_dimensions(self, node, dims):
-        if dims == None:
+        if dims is None:
             for d in range(self.aspects + 1):
                 yield d
         else:
             l = []
             for d, val in enumerate(dims):
-                if val != None and node[d] != val:
+                if val is not None and node[d] != val:
                     return
-                if val == None:
+                if val is None:
                     l.append(d)
             for d in l:
                 yield d
@@ -1352,7 +1354,7 @@ class MultiplexNetwork(MultilayerNetwork):
 
         If a layer is given then returns nodes in that layer.
         """
-        if self.fullyInterconnected or layer == None:
+        if self.fullyInterconnected or layer is None:
             for node in self.slices[0]:
                 yield node
         else:
