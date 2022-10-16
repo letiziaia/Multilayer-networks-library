@@ -2,7 +2,8 @@
 """
 from __future__ import print_function
 
-import random, math
+import random
+import math
 
 import pymnet
 from pymnet.net import MultiplexNetwork

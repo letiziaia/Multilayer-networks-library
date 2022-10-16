@@ -29,7 +29,7 @@ class PropertyAssigner(object):
 
     def __getitem__(self, item):
         pdictval = self._get_from_property_dict(item)
-        if pdictval != None:
+        if pdictval is not None:
             return pdictval
         elif len(self.propRule) > 0:
             assert (

@@ -1,6 +1,7 @@
 """Module for creating plots of multiplex network for the web. This is completely separate functionality from the draw function.
 """
-import random, math
+import random
+import math
 
 import pymnet
 from pymnet.net import MultiplexNetwork
@@ -40,7 +41,7 @@ webplot_template = """
                      .style("top",(width/6+layer*width/4).toString()+"px")
                      .style("background-color","rgba(100,100,100,0.3)")
                      .style("transform","rotate3D(-0.9,0.4,0.4,70deg)") // Firefox
-                     .style("-webkit-transform","rotate3D(-0.9,0.4,0.4,70deg)") // Safari, Chrome 
+                     .style("-webkit-transform","rotate3D(-0.9,0.4,0.4,70deg)") // Safari, Chrome
                      .attr("width", width)
                      .attr("height", height);
 
@@ -123,7 +124,7 @@ def webplot(net, outputfile=None):
     for key, val in replace.items():
         script = script.replace(key, val)
 
-    if outputfile == None:
+    if outputfile is None:
         return script
     else:
         if isinstance(outputfile, "".__class__) or isinstance(outputfile, "".__class__):

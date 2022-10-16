@@ -4,7 +4,8 @@ from __future__ import print_function
 import sys
 import unittest
 import time
-import scipy, scipy.stats
+import scipy
+import scipy.stats
 from pymnet import net, models
 from pymnet.sampling import reqs, dumb, esu, creators
 

@@ -51,7 +51,7 @@ class NetFigureMPL(drawnet.NetFigure):
 
         self.normalize_coords()
 
-        if ax == None:
+        if ax is None:
             self.fig = plt.figure(figsize=self.figsize)
             self.ax = self.fig.gca(projection="3d")
         else:
@@ -72,7 +72,7 @@ class NetFigureMPL(drawnet.NetFigure):
 
         self.ax.azim = self.azim
         self.ax.elev = self.elev
-        if self.camera_dist != None:
+        if self.camera_dist is not None:
             self.ax.dist = self.camera_dist
         if self.autoscale and len(self.layers) * self.layergap > 3:
             self.ax.autoscale_view()
@@ -89,7 +89,7 @@ class NodeMPL(drawnet.Node):
         art3d.pathpatch_2d_to_3d(self.circle, z=self.layer.z, zdir="z")
         fix_attr(self.circle, "zorder", self.layer.z + self.net.eps)
 
-        if self.label != None:
+        if self.label is not None:
             self.labelObject = self.net.ax.text(
                 self.x + self.size / 2.0,
                 self.y + self.size / 2.0,
@@ -102,10 +102,10 @@ class NodeMPL(drawnet.Node):
 
 class LayerMPL(drawnet.Layer):
     def draw(self):
-        assert self.z != None
+        assert self.z is not None
         if self.shape == "rectangle":
             self.layer = Rectangle((0, 0), 1, 1, alpha=self.alpha, color=self.color)
-            if self.label != None:
+            if self.label is not None:
                 self.labelObject = self.net.ax.text(
                     self.labelloc[0],
                     self.labelloc[1],
@@ -115,7 +115,7 @@ class LayerMPL(drawnet.Layer):
                 )
         elif self.shape == "circle":
             self.layer = Circle((0.5, 0.5), 0.5, alpha=self.alpha, color=self.color)
-            if self.label != None:
+            if self.label is not None:
                 self.labelObject = self.net.ax.text(
                     self.labelloc[0],
                     self.labelloc[1],

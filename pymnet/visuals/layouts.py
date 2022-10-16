@@ -1,8 +1,10 @@
 """Module for creating network layouts.
 """
 
+import math
+import random
+
 import pymnet
-import math, random
 
 
 def get_layout(layout, net, alignedNodes=True, **kwargs):
@@ -15,7 +17,7 @@ def get_layout(layout, net, alignedNodes=True, **kwargs):
        Node coordinates and node-layer coordinates that are generated. These can be given to the
        draw function as parameters.
     """
-    if alignedNodes == None:
+    if alignedNodes is None:
         if isinstance(net, pymnet.net.MultiplexNetwork):
             alignedNodes = True
         elif isinstance(net, pymnet.net.MultilayerNetwork):
@@ -70,13 +72,13 @@ def normalize_coordinates(coords, boxSize, inplace=False):
     # for node,(x,y) in coords.iteritems():
     for node in coords:
         x, y = coords[node]
-        if minx == None or x < minx:
+        if minx is None or x < minx:
             minx = x
-        if miny == None or y < miny:
+        if miny is None or y < miny:
             miny = y
-        if maxx == None or x > maxx:
+        if maxx is None or x > maxx:
             maxx = x
-        if maxy == None or y > maxy:
+        if maxy is None or y > maxy:
             maxy = y
 
     difx = maxx - minx
@@ -149,7 +151,7 @@ def get_fruchterman_reingold_multilayer_layout(
     # If the network is fully interconnected, we just create network with one layer
     if net.fullyInterconnected:
         assert (
-            nodelayerCoords == None
+            nodelayerCoords is None
         ), "Only node coordinates for fully interconnected networks"
         magg = pymnet.MultiplexNetwork(fullyInterconnected=False)
         magg.add_layer("all")
@@ -171,11 +173,11 @@ def get_fruchterman_reingold_multilayer_layout(
         boxSize = (boxSize, boxSize)
 
     # nodeCoords
-    if nodeCoords == None:
+    if nodeCoords is None:
         nodeCoords = {}
 
     # nodelayerCoords
-    if nodelayerCoords == None:
+    if nodelayerCoords is None:
         nodelayerCoords = {}
 
     if alignedNodes:  # use node coordinates
@@ -195,9 +197,9 @@ def get_fruchterman_reingold_multilayer_layout(
             else:
                 nlc[nl] = (boxSize[0] * random.random(), boxSize[1] * random.random())
 
-    if fixedNodes == None:
+    if fixedNodes is None:
         fixedNodes = set()
-    if fixedNodeLayers == None:
+    if fixedNodeLayers is None:
         fixedNodeLayers = set()
 
     # Parsing complete
