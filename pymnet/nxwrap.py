@@ -18,6 +18,7 @@ try:
 except ImportError:
     pass
 
+
 # NetworkX supports tuples as node names, but pymnet doesn't (because in Python there is no way of distinguishing between net[1,2] and net[(1,2)] ).
 # In order to make some of the NetworkX functions that use tuples and node names to work, we define a new class "ntuple" which is a tuple that is
 # used to store node names.
@@ -159,7 +160,7 @@ class MonoplexGraphNetworkxView(networkx.Graph):
     def __init__(self, net=None, data=None, **kwargs):
         super(MonoplexGraphNetworkxView, self).__init__(**kwargs)
 
-        if net == None:  # networkx is calling __class__()
+        if net is None:  # networkx is calling __class__()
             net = MultilayerNetwork(aspects=0)
 
         self.net = net
@@ -189,7 +190,7 @@ class MonoplexGraphNetworkxNew(MonoplexGraphNetworkxView):
 
 def autowrap(net):
     assert net.aspects == 0, "Only monoplex networks."
-    assert net.directed == False, "Only undirected networks."
+    assert net.directed is False, "Only undirected networks."
     return MonoplexGraphNetworkxView(net)
 
 
